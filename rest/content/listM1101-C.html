@@ -1,0 +1,108 @@
+<!DOCTYPE html> 
+<html>
+<head>
+<meta charset='utf-8' />
+<link href='http://rest.iut-infobio.priv.univ-lille1.fr/css/fullcalendar.min.css' rel='stylesheet' />
+<link href='http://rest.iut-infobio.priv.univ-lille1.fr/css/fullcalendar.print.css' rel='stylesheet' media='print' />
+<link href='http://rest.iut-infobio.priv.univ-lille1.fr/css/jquery.qtip.min.css' rel='stylesheet' />
+<script src='http://rest.iut-infobio.priv.univ-lille1.fr/js/lib/jquery.min.js'></script>
+<script src='http://rest.iut-infobio.priv.univ-lille1.fr/js/lib/moment.min.js'></script>
+<script src='http://rest.iut-infobio.priv.univ-lille1.fr/js/fullcalendar.min.js'></script>
+<script src='http://rest.iut-infobio.priv.univ-lille1.fr/js/lib/jquery.qtip.min.js'></script>
+
+
+<script>
+
+var today = new Date() ;
+var calendarData = {
+	header: {
+		left: 'prev,next today',
+		center: 'title',
+		right: 'agendaWeek,listDay,listWeek,listYear,month'
+	},
+
+	// customize the button names,
+	// otherwise they'd all just say "list"
+	views: {
+		agendaWeek : { buttonText : 'semaine' },
+		listDay: { buttonText: 'liste du jour' },
+		listWeek: { buttonText: 'liste de la semaine' },
+		listYear: { buttonText: 'liste annuelle' }
+	},
+
+	defaultView: 'listYear',
+	defaultDate: today.toISOString(),
+	navLinks: true, // can click day/week names to navigate views
+	editable: false,
+	eventLimit: true, // allow "more" link when too many events
+	timeFormat : 'H:mm',
+    eventRender: function(event, element) {
+        element.qtip({
+            content: {
+                text:  event.description
+            }
+        });
+    },
+	events: { }
+	} ;
+
+$(document).ready(function() {
+        charger('M1101A_TD_C') ;
+}) ;
+
+function charger(module) {
+	var req = new XMLHttpRequest();
+        req.open('GET', 'http://rest.iut-infobio.priv.univ-lille1.fr/modules/' + module, true);
+        req.onreadystatechange = function() {
+            if (req.readyState = 4 && (req.status == 200 |- req.status == 0)) {
+                  calendarData.events = JSON.parse(req.response);
+                  $('#calendar').fullCalendar(calendarData) ;
+            }
+        }
+        req.send(null);
+}
+
+</script>
+
+<style>
+
+	body {
+		margin: 40px 10px;
+		padding: 0;
+		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+		font-size: 14px;
+	}
+
+	#script-warning {
+		display: none;
+		background: #eee;
+		border-bottom: 1px solid #ddd;
+		padding: 0 10px;
+		line-height: 40px;
+		text-align: center;
+		font-weight: bold;
+		font-size: 12px;
+		color: red;
+	}
+
+	#loading {
+		display: none;
+		position: absolute;
+		top: 10px;
+		right: 10px;
+	}
+	#calendar {
+		max-width: 900px;
+		margin: 0 auto;
+	}
+
+</style>
+</head>
+
+<body>
+
+	<div id='calendar'></div>
+
+</body>
+
+</html>

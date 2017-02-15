@@ -1,0 +1,302 @@
+<!DOCTYPE html> 
+<html>
+<head>
+<meta charset='utf-8' />
+<link href='../css/fullcalendar.min.css' rel='stylesheet' />
+<link href='../css/fullcalendar.print.css' rel='stylesheet' media='print' />
+<link href='../css/jquery.qtip.min.css' rel='stylesheet' />
+<script src='../js/lib/jquery.min.js'></script>
+<script src='../js/lib/moment.min.js'></script>
+<script src='../js/fullcalendar.min.js'></script>
+    <script src='../js/lib/jquery.qtip.min.js'></script>
+    <script src='../js/lang/fr.js'></script>
+    <script src='../js/locale-all.js'></script>
+
+
+<script>
+var loading ;
+var today = new Date() ;
+var calendarData = {
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'agendaDay,listDay,agendaWeek,listWeek,month,listYear'
+        },
+        // customize the button names,
+        // otherwise they'd all just say "list"
+        views: {
+            agendaDay: {buttonText: 'jour (agenda)'},
+            listDay: {buttonText: 'jour (liste)'},
+            agendaWeek: {buttonText: 'semaine (agenda)'},
+            listWeek: {buttonText: 'semaine (liste)'},
+            listYear: {buttonText: 'année civile (liste)'}
+        },
+        events: [],
+        minTime: '07:00:00',
+        maxTime: '20:00:00',
+        locale : 'fr',
+        defaultView: 'listDay',
+        defaultDate: today.toISOString(),
+        navLinks: true, // can click day/week names to navigate views
+        eventLimit: true, // allow "more" link when too many events
+        timeFormat: 'H:mm',
+        eventRender: function (event, element) {
+            element.qtip({
+                content: {
+                    text: event.description
+                }
+            });
+        }
+};
+
+$(document).ready(function() {
+    desactivate('#chk_module') ;
+    desactivate('#chk_groupe') ;
+    desactivate('#chk_prof') ;
+    desactivate('#chk_salle') ;
+    charger_liste_modules() ;
+	charger_liste_groupes() ;
+	charger_liste_profs() ;
+    charger_liste_salle();
+    $('#calendar').fullCalendar(calendarData) ;
+    charger() ;
+}) ;
+
+var liste_modules ;
+var liste_groupes ;
+var liste_profs ;
+
+function charger_liste_modules() {
+    var req = new XMLHttpRequest();
+    req.open('GET', 'http://localhost/rest/index.php/modules' , true);
+    req.onreadystatechange = function() {
+        if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
+            var fragment = document.createDocumentFragment();
+            liste_modules = JSON.parse(req.response);
+            $.each(liste_modules, function() {
+                fragment.appendChild($("<option />").val(this.nom).text('('+this.nom+') '+this.alias)[0]);
+            });
+            $("#lb_module").append(fragment);		}
+    } ;
+    req.send(null);
+    btn = $('#ihm_Charger').css('display','block');
+}
+
+function charger_liste_groupes() {
+	var req = new XMLHttpRequest();
+	req.open('GET', 'http://localhost/rest/index.php/groupes' , true);
+	req.onreadystatechange = function() {
+		if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
+			var fragment = document.createDocumentFragment();
+			liste_groupes = JSON.parse(req.response);
+			$.each(liste_groupes, function() {
+				fragment.appendChild($("<option />").val(this.nom).text('('+this.nom+') '+this.alias)[0]);
+			});
+			$("#lb_groupe").append(fragment);		}
+	} ;
+	req.send(null);
+}
+
+function charger_liste_salle() {
+    var req = new XMLHttpRequest();
+    req.open('GET', 'http://localhost/rest/index.php/salle' , true);
+    req.onreadystatechange = function() {
+        if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
+            var fragment = document.createDocumentFragment();
+            liste_salle = JSON.parse(req.response);
+            $.each(liste_salle, function() {
+                fragment.appendChild($("<option />").val(this.nom).text(this.nom)[0]);
+            });
+            $("#lb_salle").append(fragment);       }
+    } ;
+    req.send(null);
+}
+
+function charger_liste_profs() {
+	var req = new XMLHttpRequest();
+	req.open('GET', 'http://localhost/rest/index.php/profs' , true);
+	req.onreadystatechange = function() {
+		if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
+			var fragment = document.createDocumentFragment();
+			liste_profs = JSON.parse(req.response);
+			$.each(liste_profs, function() {
+				fragment.appendChild($("<option />").val(this.codeProf).text(this.alias)[0]);
+			});
+			$("#lb_prof").append(fragment);		}
+	} ;
+	req.send(null);
+}
+
+function charger() {
+    var req = new XMLHttpRequest();
+    var parm = "";
+    var prefix = "?" ;
+    var requestString ;
+    if ($('#chk_module')[0].checked) {
+        var module = $("#lb_module option:selected")[0].value ;
+        parm = parm + prefix + "module=" + module ;
+        prefix = "&" ;
+    }
+    if ($('#chk_groupe')[0].checked) {
+        var groupe = $("#lb_groupe option:selected")[0].value ;
+        parm = parm + prefix + "groupe=" + groupe ;
+        prefix = "&" ;
+    }
+    if ($('#chk_prof')[0].checked) {
+        var prof = $("#lb_prof option:selected")[0].value ;
+        parm = parm + prefix + "prof=" + prof ;
+        prefix = "&" ;
+    }
+    if ($('#chk_salle')[0].checked) {
+        var salle = $("#lb_salle option:selected")[0].value ;
+        parm = parm + prefix + "salle=" + salle ;
+        prefix = "&" ;
+    }
+    requestString = "http://localhost/rest/index.php/seances/search" ;
+    if (prefix == "&") {
+        requestString = requestString + parm ;
+    }
+    req.open('GET', requestString, true);
+    req.onreadystatechange = function() {
+        if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
+            $('#calendar').fullCalendar('removeEvents') ;
+            $('#calendar').fullCalendar('addEventSource', JSON.parse(req.response)) ;
+        }
+    };
+    req.send(null);
+    $('#ihm_button').css('display','none');
+}
+
+function activate(chkbox) {
+    var chk = $(chkbox)[0] ;
+    chk.checked = true;
+    button_enable();
+}
+function desactivate(chkbox) {
+    var chk = $(chkbox)[0] ;
+    chk.checked = false;
+}
+function button_enable() {
+    $('#calendar').fullCalendar('removeEvents') ;
+    // $('#ihm_button').css('display','block');
+    charger() ;
+}
+
+var loading ;
+
+/*
+function loadingOpen() {
+
+    loading=open("",'popup','width=400,height=200,toolbar=no,scrollbars=no,resizable=yes');
+    loading.document.write("&lt;TITLE&gt;"+document.forms["f_popup"].elements["titre"].value+"&lt;/TITLE&gt;");
+    loading.document.write("&lt;BODY&gt; Bonjour "+document.forms["f_popup"].elements["nom"].value+"&lt;BR&gt;&lt;BR&gt;");
+    loading.document.write("Chargement en cours...");
+    loading.document.write("&lt;/BODY&gt;");
+    loading.document.close();
+}
+
+function loadingClose() {
+    if (loading.document) loading.close() ;
+}
+ */
+
+</script>
+
+<style>
+
+	body {
+		margin: 40px 10px;
+		padding: 0;
+		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+		font-size: 14px;
+	}
+
+	#script-warning {
+		display: none;
+		background: #eee;
+		border-bottom: 1px solid #ddd;
+		padding: 0 10px;
+		line-height: 40px;
+		text-align: center;
+		font-weight: bold;
+		font-size: 12px;
+		color: red;
+	}
+
+	#loading {
+		display: none;
+		position: absolute;
+		top: 10px;
+		right: 10px;
+	}
+	#calendar {
+		max-width: 900px;
+		margin: 0 auto;
+        clear: both;
+	}
+	#ihm_form {
+		max-width: 900px;
+		margin: 0 auto;
+        padding-left: 30px ;
+        padding-right: 30px ;
+        padding-bottom: 60px;
+        padding-top: 10px ;
+        background-color: paleturquoise;
+	}
+	#ihm_module {
+		float: left;
+        margin-right: 10px;
+	}
+	#ihm_groupe {
+		float: left;
+        margin-right: 10px;
+	}
+    #ihm_prof {
+        float: left;
+        margin-right: 10px;
+    }
+    #ihm_button {
+        float: right;
+        margin-left: 10px;
+        height: 100%;
+    }
+    #btnCharger {
+        height = 100% ;
+    }
+    #rule {
+        clear: both;
+    }
+</style>
+</head>
+
+<body>
+    <div id="ihm_form">
+        <form id='formulaire'>
+		<div id='ihm_module'>
+			MODULES  <input type="checkbox" id="chk_module" onchange="button_enable()"/><br>
+			<select id='lb_module' onchange="activate('#chk_module')"></select>
+		</div>
+		<div id='ihm_groupe'>
+			GROUPES   <input type="checkbox" id="chk_groupe" onchange="button_enable()"/><br>
+    	    <select id='lb_groupe' onchange="activate('#chk_groupe')"></select>
+		</div>
+        <div id='ihm_prof'>
+            PROFS   <input type="checkbox" id="chk_prof" onchange="button_enable()"/><br>
+            <select id='lb_prof' onchange="activate('#chk_prof')"></select>
+        </div>
+        <div id='ihm_salle'>
+            SALLES   <input type="checkbox" id="chk_salle" onchange="button_enable()"/><br>
+            <select id='lb_salle' onchange="activate('#chk_salle')"></select>
+        </div>
+<!--
+        <div id='ihm_button'>
+            <input type='button' value='Charger' id='btnCharger' onclick='charger()'/>
+        </div>
+-->
+        </form>
+    </div>
+    <div id="rule"/>
+	<div id='calendar'></div>
+</body>
+
+</html>
