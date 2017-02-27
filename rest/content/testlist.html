@@ -152,6 +152,7 @@ function charger() {
         parm = parm + prefix + "salle=" + salle ;
         prefix = "&" ;
     }
+    
     requestString = "http://localhost/rest/index.php/seances/search" ;
     if (prefix == "&") {
         requestString = requestString + parm ;
@@ -165,6 +166,49 @@ function charger() {
     };
     req.send(null);
     $('#ihm_button').css('display','none');
+}
+
+function create(){
+    var req = new XMLHttpRequest();
+    var parm = "";
+    var prefix = "?" ;
+    var requestString ;
+    if ($('#chk_module')[0].checked) {
+        var module = $("#lb_module option:selected")[0].value ;
+        parm = parm + prefix + "module=" + module ;
+        prefix = "&" ;
+    }
+    if ($('#chk_groupe')[0].checked) {
+        var groupe = $("#lb_groupe option:selected")[0].value ;
+        parm = parm + prefix + "groupe=" + groupe ;
+        prefix = "&" ;
+    }
+    if ($('#chk_prof')[0].checked) {
+        var prof = $("#lb_prof option:selected")[0].value ;
+        parm = parm + prefix + "prof=" + prof ;
+        prefix = "&" ;
+    }
+    if ($('#chk_salle')[0].checked) {
+        var salle = $("#lb_salle option:selected")[0].value ;
+        parm = parm + prefix + "salle=" + salle ;
+        prefix = "&" ;
+    }
+    
+        var heure = $("#lb_heure").value ;
+        parm = parm + prefix + "heure=" + heure ;
+        prefix = "&" ;
+    
+   
+        var date = $("#lb_date").value ;
+        parm = parm + prefix + "date=" + date ;
+        prefix = "&" ;
+    
+    requestString = "http://localhost/rest/index.php/create" ;
+    if (prefix == "&") {
+        requestString = requestString + parm ;
+    }
+        req.open('GET', requestString, true);
+
 }
 
 function activate(chkbox) {
@@ -288,11 +332,18 @@ function loadingClose() {
             SALLES   <input type="checkbox" id="chk_salle" onchange="button_enable()"/><br>
             <select id='lb_salle' onchange="activate('#chk_salle')"></select>
         </div>
-<!--
-        <div id='ihm_button'>
-            <input type='button' value='Charger' id='btnCharger' onclick='charger()'/>
+        <div id='ihm_heure'>
+            heure : <input type="number" id="chk_heure"  /><br>
         </div>
--->
+        <div id='ihm_date'>
+            date :  <input type="date" id="chk_date" /><br>
+
+        </div>
+
+        <div>
+            <input type='button' value='Charger' id='btnCharger' onclick='create()'/>
+        </div>
+
         </form>
     </div>
     <div id="rule"/>

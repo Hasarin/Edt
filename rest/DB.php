@@ -59,6 +59,24 @@ class DB {
         $row = $stmt->fetch(PDO::FETCH_BOTH, PDO::FETCH_ORI_FIRST) ;
         return $row ;
     }
+
+  public function createCour($sqlcommand,$par_module, $par_date, $par_heure) {
+ 
+ 
+        // Vérifiez d'abord si l'utilisateur existe déjà dans db
+          
+
+            // requete d'insertion
+          //  $stmt = static::$connection->prepare("INSERT INTO seances(dateSeance,heureSeance,dureeSeance,
+        //codeEnseignement,commentaire,diffusable) values ('"+$par_date+"',"+$par_heure+",200,"+$par_module+",'',1");
+          $stmt = static::$connection->prepare($sqlcommand);
+
+            $stmt->execute();
+ 
+            
+            
+    }
+
     public static function error($exc, $file, $line) {
         if (defined(DEBUG)) {
             throw ($exc) ;
