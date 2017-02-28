@@ -60,9 +60,9 @@ class DB {
         return $row ;
     }
 
-  public function createCour($sqlcommand,$par_module, $par_date, $par_heure) {
+  public static function createCour($sqlcommand) {
  
- 
+
         // Vérifiez d'abord si l'utilisateur existe déjà dans db
           
 
@@ -75,6 +75,13 @@ class DB {
  
             
             
+    }
+
+    public static function getModule($sqlcommand)
+    {
+         $stmt = static::$connection->prepare($sqlcommand);
+            $stmt->execute();
+            return $stmt;
     }
 
     public static function error($exc, $file, $line) {

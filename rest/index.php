@@ -101,16 +101,26 @@ $app->get('/creation',function() {
  
             // lecture des params de post
             $par_module = $app->request->get('module');
+            $sql = "select codeMatiere FROM matieres WHERE nom='$par_module'";
+            $stmt = DB::getModule($sql) ;
+            $module = DB::getNext($stmt) ;
+            $test = json_encode($module, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $module = $test2[0];
+
             $par_date = $app->request->get('date');
             $par_heure = $app->request->get('heure');
-            $par_prof = $app->request->get('prof');
 
        // $sqlcommand = "INSERT INTO seances(dateSeance,heureSeance,dureeSeance,codeEnseignement,commentaire,diffusable)
-         //    values ('2017-12-03',1000,200,3201,'',1)";
+        //    values ('2017-12-03',1000,200,3201,'',1)";
+
         $sqlcommand = "INSERT INTO seances(dateSeance,heureSeance,dureeSeance,codeEnseignement,commentaire,diffusable)
-             values ('$par_date',$par_heure,200,$par_module,'',1)";
-      //      echo $sqlcommand;
-    $stmt = DB::CreateCour($sqlcommand,$par_module,$par_date,$par_heure) ;
+        values ('$par_date',$par_heure,200,$module,'',1)";
+
+             /*$sqlcommand = "INSERT INTO seances(heureSeance,dureeSeance,commentaire,diffusable)
+             values (1000,200,'',1)";*/
+     echo $sqlcommand;
+    $stmt = DB::createCour($sqlcommand) ;
       
  
     });

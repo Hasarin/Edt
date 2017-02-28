@@ -68,7 +68,7 @@ var liste_profs ;
 
 function charger_liste_modules() {
     var req = new XMLHttpRequest();
-    req.open('GET', 'http://localhost/rest/index.php/modules' , true);
+    req.open('GET', 'http://localhost/Edt/rest/index.php/modules' , true);
     req.onreadystatechange = function() {
         if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
             var fragment = document.createDocumentFragment();
@@ -84,7 +84,7 @@ function charger_liste_modules() {
 
 function charger_liste_groupes() {
 	var req = new XMLHttpRequest();
-	req.open('GET', 'http://localhost/rest/index.php/groupes' , true);
+	req.open('GET', 'http://localhost/Edt/rest/index.php/groupes' , true);
 	req.onreadystatechange = function() {
 		if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
 			var fragment = document.createDocumentFragment();
@@ -99,7 +99,7 @@ function charger_liste_groupes() {
 
 function charger_liste_salle() {
     var req = new XMLHttpRequest();
-    req.open('GET', 'http://localhost/rest/index.php/salle' , true);
+    req.open('GET', 'http://localhost/Edt/rest/index.php/salle' , true);
     req.onreadystatechange = function() {
         if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
             var fragment = document.createDocumentFragment();
@@ -114,7 +114,7 @@ function charger_liste_salle() {
 
 function charger_liste_profs() {
 	var req = new XMLHttpRequest();
-	req.open('GET', 'http://localhost/rest/index.php/profs' , true);
+	req.open('GET', 'http://localhost/Edt/rest/index.php/profs' , true);
 	req.onreadystatechange = function() {
 		if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
 			var fragment = document.createDocumentFragment();
@@ -153,7 +153,7 @@ function charger() {
         prefix = "&" ;
     }
     
-    requestString = "http://localhost/rest/index.php/seances/search" ;
+    requestString = "http://localhost/Edt/rest/index.php/seances/search" ;
     if (prefix == "&") {
         requestString = requestString + parm ;
     }
@@ -194,21 +194,21 @@ function create(){
         prefix = "&" ;
     }
     
-        var heure = $("#lb_heure").value ;
+        var heure = document.getElementById("heure").value;
         parm = parm + prefix + "heure=" + heure ;
         prefix = "&" ;
     
    
-        var date = $("#lb_date").value ;
+        var date = document.getElementById("date").value ;
         parm = parm + prefix + "date=" + date ;
         prefix = "&" ;
     
-    requestString = "http://localhost/rest/index.php/create" ;
+    requestString = "http://localhost/Edt/rest/index.php/creation" ;
     if (prefix == "&") {
         requestString = requestString + parm ;
     }
         req.open('GET', requestString, true);
-
+        req.send(null);
 }
 
 function activate(chkbox) {
@@ -333,10 +333,10 @@ function loadingClose() {
             <select id='lb_salle' onchange="activate('#chk_salle')"></select>
         </div>
         <div id='ihm_heure'>
-            heure : <input type="number" id="chk_heure"  /><br>
+            heure : <input type="number" id="heure"/><br>
         </div>
         <div id='ihm_date'>
-            date :  <input type="date" id="chk_date" /><br>
+            date :  <input type="date" id="date" /><br>
 
         </div>
 
