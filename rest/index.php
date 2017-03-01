@@ -18,6 +18,34 @@ function get_seances($sqlcommand, $arguments) {
     return $items ;
 }
 
+
+$app->get('/cours', function() {
+    $app = Slim\Slim::getInstance() ;
+    $module = $app->request->get('module');
+
+            $sql = "select codeMatiere FROM matieres where nom='$module'";
+            $stmt = DB::getModule($sql) ;
+            $module = DB::getNext($stmt) ;
+            $test = json_encode($module, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $module = $test2[0];
+
+    $response = $app->response() ;
+    $response->setStatus(200) ;
+    $response->headers->set('Content-Type', 'application/json');
+
+    DB::begin_transaction() ;
+    $sql = "select * ".
+        "from enseignements e  ".
+        "where (e.deleted = 0)  ".
+        "     and e.codeProprietaire  BETWEEN 3000 AND 3099 and e.codeMatiere=$module ".
+        "order by  e.nom ;" ;
+    $stmt = DB::execute($sql, array()) ;
+    $items = DB::getAll($stmt) ;
+    DB::transaction_commit() ;
+    echo json_encode($items, JSON_PRETTY_PRINT) ;
+}) ;
+
 $app->get('/modules', function() {
     $app = Slim\Slim::getInstance() ;
     $response = $app->response() ;
@@ -112,6 +140,15 @@ $app->get('/creation',function() {
 
             $par_prof = $app->request->get('prof');
             
+            $par_cours = $app->request->get('cours');
+            $sql = "select dureeSeance FROM enseignements where codeEnseignement=$par_cours";
+            $stmt = DB::getModule($sql) ;
+            $module = DB::getNext($stmt) ;
+            $test = json_encode($module, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $duree = $test2[0];
+            echo $duree." / ";
+
             echo $par_prof." / ";
 
             $par_salle = $app->request->get('salle');
@@ -129,7 +166,7 @@ $app->get('/creation',function() {
         //    values ('2017-12-03',1000,200,3201,'',1)";
 
         $sqlcommand = "INSERT INTO seances(dateSeance,heureSeance,dureeSeance,codeEnseignement,dateModif,codeProprietaire,commentaire,dateCreation)
-        values ('$par_date',$par_heure,200,$module,now(),3001,'',now())";
+        values ('$par_date',$par_heure,$duree,$par_cours,now(),3001,'',now())";
         $stmt = DB::createCour($sqlcommand) ;
 
         $sql = "select max(codeSeance) FROM seances ";

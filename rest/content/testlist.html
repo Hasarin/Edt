@@ -66,7 +66,30 @@ var liste_modules ;
 var liste_groupes ;
 var liste_profs ;
 
+function charger_liste_cours(module) {
+    console.log(module);
+
+    var req = new XMLHttpRequest();
+    req.open('GET', 'http://localhost/Edt/rest/index.php/cours?module='+module , true);
+    req.onreadystatechange = function() {
+        if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
+            var fragment = document.createDocumentFragment();
+            document.getElementById("lb_cours").innerHTML = "";
+            liste_modules = JSON.parse(req.response);
+            $.each(liste_modules, function() {
+                console.log(this.codeEnseignement);
+
+                fragment.appendChild($("<option />").val(this.codeEnseignement).text('('+this.nom+') '+this.alias)[0]);
+            });
+            $("#lb_cours").append(fragment);       }
+    } ;
+    req.send(null);
+    btn = $('#ihm_Charger').css('display','block');
+}
+
+
 function charger_liste_modules() {
+
     var req = new XMLHttpRequest();
     req.open('GET', 'http://localhost/Edt/rest/index.php/modules' , true);
     req.onreadystatechange = function() {
@@ -198,6 +221,9 @@ function create(){
         parm = parm + prefix + "heure=" + heure ;
         prefix = "&" ;
     
+        var cours = $("#lb_cours option:selected")[0].value ;
+        parm = parm + prefix + "cours=" + cour ;
+        prefix = "&" ;
    
         var date = document.getElementById("date").value ;
         parm = parm + prefix + "date=" + date ;
@@ -215,6 +241,12 @@ function activate(chkbox) {
     var chk = $(chkbox)[0] ;
     chk.checked = true;
     button_enable();
+    if(chkbox == "#chk_module"){
+
+                var module = $("#lb_module option:selected")[0].value ;
+                charger_liste_cours(module) ;
+
+    }
 }
 function desactivate(chkbox) {
     var chk = $(chkbox)[0] ;
@@ -342,6 +374,9 @@ function loadingClose() {
             <div id='ihm_date'>
                 date :  <input type="date" id="date" /><br>
 
+            </div>
+            <div id='ihm_cours'>
+            COURS <select id='lb_cours' ></select>
             </div>
         <div>
             <input type='button' value='Charger' id='btnCharger' onclick='create()'/>
