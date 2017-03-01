@@ -67,15 +67,31 @@ class DB {
           
 
             // requete d'insertion
-          //  $stmt = static::$connection->prepare("INSERT INTO seances(dateSeance,heureSeance,dureeSeance,
-        //codeEnseignement,commentaire,diffusable) values ('"+$par_date+"',"+$par_heure+",200,"+$par_module+",'',1");
-          $stmt = static::$connection->prepare($sqlcommand);
+           $stmt = static::$connection->prepare($sqlcommand);
 
             $stmt->execute();
  
             
             
     }
+
+
+  public static function createRessource($sqlcommand) {
+ 
+
+        // Vérifiez d'abord si l'utilisateur existe déjà dans db
+          
+
+            // requete d'insertion
+           $stmt = static::$connection->prepare($sqlcommand);
+
+            $stmt->execute();
+ 
+            
+            
+    }
+
+
 
     public static function getModule($sqlcommand)
     {

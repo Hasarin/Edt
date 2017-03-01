@@ -100,13 +100,27 @@ $app->get('/creation',function() {
     $app = Slim\Slim::getInstance() ; 
  
             // lecture des params de post
-            $par_module = $app->request->get('module');
-            $sql = "select codeMatiere FROM matieres WHERE nom='$par_module'";
+            $module = $app->request->get('module');
+            $sql = "select codeMatiere FROM matieres where nom='$module'";
             $stmt = DB::getModule($sql) ;
             $module = DB::getNext($stmt) ;
             $test = json_encode($module, JSON_PRETTY_PRINT) ;
             $test2 = json_decode($test, true);
             $module = $test2[0];
+            
+            echo $module." / ";
+
+            $par_prof = $app->request->get('prof');
+            
+            echo $par_prof." / ";
+
+            $par_salle = $app->request->get('salle');
+           
+            echo $par_salle." / ";
+
+            $par_groupe = $app->request->get('groupe');
+           
+            echo $par_groupe;
 
             $par_date = $app->request->get('date');
             $par_heure = $app->request->get('heure');
@@ -114,14 +128,33 @@ $app->get('/creation',function() {
        // $sqlcommand = "INSERT INTO seances(dateSeance,heureSeance,dureeSeance,codeEnseignement,commentaire,diffusable)
         //    values ('2017-12-03',1000,200,3201,'',1)";
 
-        $sqlcommand = "INSERT INTO seances(dateSeance,heureSeance,dureeSeance,codeEnseignement,commentaire,diffusable)
-        values ('$par_date',$par_heure,200,$module,'',1)";
+        $sqlcommand = "INSERT INTO seances(dateSeance,heureSeance,dureeSeance,codeEnseignement,dateModif,codeProprietaire,commentaire,dateCreation)
+        values ('$par_date',$par_heure,200,$module,now(),3001,'',now())";
+        $stmt = DB::createCour($sqlcommand) ;
 
-             /*$sqlcommand = "INSERT INTO seances(heureSeance,dureeSeance,commentaire,diffusable)
-             values (1000,200,'',1)";*/
-     echo $sqlcommand;
-    $stmt = DB::createCour($sqlcommand) ;
+        $sql = "select max(codeSeance) FROM seances ";
+            $stmt = DB::getModule($sql) ;
+            $module = DB::getNext($stmt) ;
+            $test = json_encode($module, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $max = $test2[0];
+
+        $sqlcommand2 = "INSERT INTO seances_profs(codeSeance,codeRessource, dateModif, deleted,codeProprietaire,dateCreation)
+        values ($max,$par_prof,now(),0,3001,now())";
+
+    $stmt = DB::createRessource($sqlcommand2) ;
       
+
+        $sqlcommand3 = "INSERT INTO seances_salles(codeSeance,codeRessource, dateModif, deleted,codeProprietaire,dateCreation)
+        values ($max,$par_salle,now(),0,3001,now())";
+
+    $stmt = DB::createRessource($sqlcommand3) ;
+
+        $sqlcommand4 = "INSERT INTO seances_groupes(codeSeance,codeRessource, dateModif, deleted,codeProprietaire,dateCreation)
+        values ($max,$par_groupe,now(),0,3001,now())";
+
+    $stmt = DB::createRessource($sqlcommand4) ;
+
  
     });
 
@@ -155,7 +188,8 @@ $app->get('/seances/search', function() {
             e.couleurFond AS couleurFond, 
             e.couleurPolice AS couleurPolice  
         from seances s  
-            left join enseignements e  on s.codeEnseignement = e.codeEnseignement  
+            left join enseignements e  on s.codeEnseignement = e.codeEnseignement 
+            left join matieres m  on m.codeMatiere = e.codeMatiere  
             left join seances_groupes sg on s.codeSeance = sg.codeSeance
             left join ressources_groupes g on sg.codeRessource = g.codeGroupe
             left join seances_salles sl on s.codeSeance = sl.codeSeance
@@ -170,10 +204,10 @@ $app->get('/seances/search', function() {
             and ((l.deleted = 0) or (l.deleted is null))
             and ((p.deleted = 0) or (p.deleted is null))
             /* and s.codeProprietaire between 3000 and 3099 */
-            and (:module = '%%' or e.nom like :module) 
-            and (:groupe = '' or g.nom = :groupe)
+            and (:module = '' or m.nom  = :module) 
+            and (:groupe = '' or g.codeGroupe = :groupe)
             and (:prof = '' or p.codeProf = :prof)
-            and (:salle = '' or l.nom = :salle)
+            and (:salle = '' or l.codeSalle = :salle)
         group by  
             s.codeSeance, 
             s.dateSeance, 
@@ -202,7 +236,7 @@ EOT;
     if ($par_salle == NULL) $par_salle = "" ;
 
     $arguments = array(
-        ':module' => "%$par_module%",
+        ':module' => "$par_module",
         ':groupe' => "$par_groupe",
         ':prof' => "$par_prof",
         ':salle' => "$par_salle"

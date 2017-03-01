@@ -90,7 +90,7 @@ function charger_liste_groupes() {
 			var fragment = document.createDocumentFragment();
 			liste_groupes = JSON.parse(req.response);
 			$.each(liste_groupes, function() {
-				fragment.appendChild($("<option />").val(this.nom).text('('+this.nom+') '+this.alias)[0]);
+				fragment.appendChild($("<option />").val(this.codeGroupe).text('('+this.nom+') '+this.alias)[0]);
 			});
 			$("#lb_groupe").append(fragment);		}
 	} ;
@@ -105,7 +105,7 @@ function charger_liste_salle() {
             var fragment = document.createDocumentFragment();
             liste_salle = JSON.parse(req.response);
             $.each(liste_salle, function() {
-                fragment.appendChild($("<option />").val(this.nom).text(this.nom)[0]);
+                fragment.appendChild($("<option />").val(this.codeSalle).text(this.nom)[0]);
             });
             $("#lb_salle").append(fragment);       }
     } ;
@@ -287,6 +287,8 @@ function loadingClose() {
         padding-top: 10px ;
         background-color: paleturquoise;
 	}
+  
+
 	#ihm_module {
 		float: left;
         margin-right: 10px;
@@ -304,6 +306,7 @@ function loadingClose() {
         margin-left: 10px;
         height: 100%;
     }
+     
     #btnCharger {
         height = 100% ;
     }
@@ -332,14 +335,14 @@ function loadingClose() {
             SALLES   <input type="checkbox" id="chk_salle" onchange="button_enable()"/><br>
             <select id='lb_salle' onchange="activate('#chk_salle')"></select>
         </div>
-        <div id='ihm_heure'>
-            heure : <input type="number" id="heure"/><br>
-        </div>
-        <div id='ihm_date'>
-            date :  <input type="date" id="date" /><br>
 
-        </div>
+            <div id='ihm_heure'>
+                heure : <input type="number" id="heure"/><br>
+            </div>
+            <div id='ihm_date'>
+                date :  <input type="date" id="date" /><br>
 
+            </div>
         <div>
             <input type='button' value='Charger' id='btnCharger' onclick='create()'/>
         </div>
