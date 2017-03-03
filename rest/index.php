@@ -124,6 +124,60 @@ $app->get('/salle', function() {
     echo json_encode($items, JSON_PRETTY_PRINT) ;
 }) ;
 
+$app->get('/suppression',function() {
+         echo "rentré fonction";
+        $app = Slim\Slim::getInstance() ; 
+            $module = $app->request->get('module');
+            $sql = "select codeMatiere FROM matieres where nom='$module'";
+            $stmt = DB::getModule($sql) ;
+            $module = DB::getNext($stmt) ;
+            $test = json_encode($module, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $module = $test2[0];
+            
+            $par_prof = $app->request->get('prof');
+            
+            $par_cours = $app->request->get('cours');
+
+            
+            $par_salle = $app->request->get('salle');
+           
+            
+
+            $par_groupe = $app->request->get('groupe');
+           
+
+            $par_date = $app->request->get('date');
+            $par_heure = $app->request->get('heure');
+           
+            $sqlcommand2= "SELECT p.codeSeance from seances_profs as p inner join seances as s on p.codeSeance=s.codeSeance where codeRessource=$par_prof
+             and dateSeance='$par_date' and heureSeance=$par_heure and codeEnseignement=$par_cours";
+            echo $sqlcommand2;
+            $stmt = DB::getModule($sqlcommand2) ;
+            $code = DB::getNext($stmt) ;  
+            $test = json_encode($code, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $code2 = $test2[0];        
+            echo $code2."/";
+
+            $sqlcommand = "UPDATE seances set deleted=1 ,dateModif=now() where codeSeance=$code2" ;
+            echo $sqlcommand;
+            $stmt = DB::createCour($sqlcommand) ;
+            $sqlcommand = "UPDATE seances_salles set deleted=1 , dateModif=now() where codeSeance=$code2";
+            echo $sqlcommand;
+            $stmt = DB::createCour($sqlcommand) ;
+            $sqlcommand = "UPDATE seances_profs set deleted=1 , dateModif=now() where codeSeance=$code2";
+            echo $sqlcommand;
+            $stmt = DB::createCour($sqlcommand) ;
+
+            $sqlcommand = "UPDATE seances_groupes set deleted=1 , dateModif=now() where codeSeance=$code2";
+            echo $sqlcommand;
+            $stmt = DB::createCour($sqlcommand) ;
+
+
+
+    });
+
 $app->get('/creation',function() {
     $app = Slim\Slim::getInstance() ; 
  

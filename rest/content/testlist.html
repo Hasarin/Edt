@@ -222,7 +222,7 @@ function create(){
         prefix = "&" ;
     
         var cours = $("#lb_cours option:selected")[0].value ;
-        parm = parm + prefix + "cours=" + cour ;
+        parm = parm + prefix + "cours=" + cours ;
         prefix = "&" ;
    
         var date = document.getElementById("date").value ;
@@ -230,6 +230,52 @@ function create(){
         prefix = "&" ;
     
     requestString = "http://localhost/Edt/rest/index.php/creation" ;
+    if (prefix == "&") {
+        requestString = requestString + parm ;
+    }
+        req.open('GET', requestString, true);
+        req.send(null);
+}
+
+function supprimer(){
+    var req = new XMLHttpRequest();
+    var parm = "";
+    var prefix = "?" ;
+    var requestString ;
+    if ($('#chk_module')[0].checked) {
+        var module = $("#lb_module option:selected")[0].value ;
+        parm = parm + prefix + "module=" + module ;
+        prefix = "&" ;
+    }
+    if ($('#chk_groupe')[0].checked) {
+        var groupe = $("#lb_groupe option:selected")[0].value ;
+        parm = parm + prefix + "groupe=" + groupe ;
+        prefix = "&" ;
+    }
+    if ($('#chk_prof')[0].checked) {
+        var prof = $("#lb_prof option:selected")[0].value ;
+        parm = parm + prefix + "prof=" + prof ;
+        prefix = "&" ;
+    }
+    if ($('#chk_salle')[0].checked) {
+        var salle = $("#lb_salle option:selected")[0].value ;
+        parm = parm + prefix + "salle=" + salle ;
+        prefix = "&" ;
+    }
+    
+        var heure = document.getElementById("heure").value;
+        parm = parm + prefix + "heure=" + heure ;
+        prefix = "&" ;
+    
+        var cours = $("#lb_cours option:selected")[0].value ;
+        parm = parm + prefix + "cours=" + cours ;
+        prefix = "&" ;
+   
+        var date = document.getElementById("date").value ;
+        parm = parm + prefix + "date=" + date ;
+        prefix = "&" ;
+    
+    requestString = "http://localhost/Edt/rest/index.php/suppression" ;
     if (prefix == "&") {
         requestString = requestString + parm ;
     }
@@ -381,8 +427,12 @@ function loadingClose() {
         <div>
             <input type='button' value='Charger' id='btnCharger' onclick='create()'/>
         </div>
+        <div>
+            <input type='button' value='sup' id='btnCharger' onclick='supprimer()'/>
+        </div>
 
         </form>
+
     </div>
     <div id="rule"/>
 	<div id='calendar'></div>
