@@ -130,17 +130,39 @@ $app->get('/verrificationTempsTotal', function() {
     $response->setStatus(200) ;
     $response->headers->set('Content-Type', 'application/json');
 
-    DB::begin_transaction() ;
+    $seance = $app->request->get('seance');
+
+    $sql = "SELECT codeEnseignement FROM seances WHERE codeSeance=$seance";
+            $stmt = DB::getModule($sql) ;
+            $tuple = DB::getNext($stmt) ;
+            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $codeEnseignement = $test2[0]; 
+
+    $sql = "SELECT dureeTotale FROM enseignements where codeEnseignement=$codeEnseignement";
+            $stmt = DB::getModule($sql) ;
+            $tuple = DB::getNext($stmt) ;
+            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $dureeTotale = $test2[0];
+
+    $sql ="SELECT SUM(s.dureeSeance) FROM seances s JOIN seances_groupes sg ON s.codeSeance = sg.codeSeance WHERE codeEnseignement=$codeEnseignement And s.deleted =0 ";
+            $stmt = DB::getModule($sql) ;
+            $tuple = DB::getNext($stmt) ;
+            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $SumDuree = $test2[0];
+
+    /*DB::begin_transaction();
     $sql = "select codeSalle,nom ".
         "from ressources_salles s  ;" ;
     $stmt = DB::execute($sql, array()) ;
     $items = DB::getAll($stmt) ;
     DB::transaction_commit() ;
-    echo json_encode($items, JSON_PRETTY_PRINT) ;
+    echo json_encode($SumDuree, JSON_PRETTY_PRINT) ;*/
 }) ;
 
 $app->get('/suppression',function() {
-         echo "rentré fonction";
         $app = Slim\Slim::getInstance() ; 
             $module = $app->request->get('module');
             $sql = "select codeMatiere FROM matieres where nom='$module'";
