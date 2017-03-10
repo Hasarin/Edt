@@ -84,7 +84,7 @@ function charger_liste_cours(module) {
             $("#lb_cours").append(fragment);       }
     } ;
     req.send(null);
-    btn = $('#ihm_Charger').css('display','block');
+    //btn = $('#ihm_Charger').css('display','block');
 }
 
 
@@ -283,6 +283,21 @@ function supprimer(){
         req.send(null);
 }
 
+function modif(){
+    var req = new XMLHttpRequest();
+    var parm = "";
+    var prefix = "?" ;
+    var requestString ;
+    
+    
+    requestString = "./modif.php" ;
+    if (prefix == "&") {
+        requestString = requestString + parm ;
+    }
+        document.location.replace(requestString);
+
+}
+
 function activate(chkbox) {
     var chk = $(chkbox)[0] ;
     chk.checked = true;
@@ -394,31 +409,32 @@ function loadingClose() {
 </style>
 </head>
 
+
 <body>
     <div id="ihm_form">
-        <form id='formulaire'>
+        <form id='formulaire' method="get" action="modif.php">
 		<div id='ihm_module'>
-			MODULES  <input type="checkbox" id="chk_module" onchange="button_enable()"/><br>
+			MODULES  <input type="checkbox" id="chk_module" name="module" onchange="button_enable()"/><br>
 			<select id='lb_module' onchange="activate('#chk_module')"></select>
 		</div>
 		<div id='ihm_groupe'>
-			GROUPES   <input type="checkbox" id="chk_groupe" onchange="button_enable()"/><br>
+			GROUPES   <input type="checkbox" id="chk_groupe" name="groupe" onchange="button_enable()"/><br>
     	    <select id='lb_groupe' onchange="activate('#chk_groupe')"></select>
 		</div>
         <div id='ihm_prof'>
-            PROFS   <input type="checkbox" id="chk_prof" onchange="button_enable()"/><br>
+            PROFS   <input type="checkbox" id="chk_prof" name="prof" onchange="button_enable()"/><br>
             <select id='lb_prof' onchange="activate('#chk_prof')"></select>
         </div>
         <div id='ihm_salle'>
-            SALLES   <input type="checkbox" id="chk_salle" onchange="button_enable()"/><br>
+            SALLES   <input type="checkbox" id="chk_salle" name="salle" onchange="button_enable()"/><br>
             <select id='lb_salle' onchange="activate('#chk_salle')"></select>
         </div>
 
             <div id='ihm_heure'>
-                heure : <input type="number" id="heure"/><br>
+                heure : <input type="number"  name="heure" id="heure"/><br>
             </div>
             <div id='ihm_date'>
-                date :  <input type="date" id="date" /><br>
+                date :  <input type="date" name="date" id="date" /><br>
 
             </div>
             <div id='ihm_cours'>
@@ -430,8 +446,10 @@ function loadingClose() {
         <div>
             <input type='button' value='sup' id='btnCharger' onclick='supprimer()'/>
         </div>
-
+        <input type='button' value='modif' id='btnCharger' onclick='modif()'/>
         </form>
+            <input type='button' value='actualiser' id='btnCharger' onclick='charger()'/>
+
 
     </div>
     <div id="rule"/>
