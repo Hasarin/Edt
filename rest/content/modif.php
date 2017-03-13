@@ -208,9 +208,17 @@ function supprimer(){
     if (prefix == "&") {
         requestString = requestString + parm ;
     }
+   
         req.open('GET', requestString, true);
         req.send(null);
-        //document.location.replace("testlist.html");
+
+        rep = JSON.parse(req.response);
+        $.each(liste_salle, function() {
+        console.log(this.cle1);
+        });
+
+        document.getElementById('affichage').innerHTML = req.cle1+"!!!";
+            
 
         
 }
@@ -283,5 +291,8 @@ function activate(check) {
       
 
    </fieldset>
+
+   <div id="affichage"></div> 
+
 </body>
 </html>
