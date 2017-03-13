@@ -150,6 +150,16 @@ function charger_liste_profs() {
 	req.send(null);
 }
 
+function tt(){
+    var req = new XMLHttpRequest();
+    req.open('GET','http://localhost/Edt/rest/index.php/verrificationTempsTotal?seance=16202820',true);
+    req.onreadystatechange = function() {
+        data = JSON.parse(req.response);
+        document.getElementById("erreur").append(data);
+    };
+    req.send(null);
+}
+
 function charger() {
     var req = new XMLHttpRequest();
     var parm = "";
@@ -288,8 +298,7 @@ function modif(){
     var parm = "";
     var prefix = "?" ;
     var requestString ;
-    
-    
+
     requestString = "./modif.php" ;
     if (prefix == "&") {
         requestString = requestString + parm ;
@@ -449,6 +458,8 @@ function loadingClose() {
         <input type='button' value='modif' id='btnCharger' onclick='modif()'/>
         </form>
             <input type='button' value='actualiser' id='btnCharger' onclick='charger()'/>
+        <div><p id="erreur"></p></div>
+        <input type='button' value='test' id='btntest' onclick='tt()'/>
 
 
     </div>

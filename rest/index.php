@@ -152,6 +152,7 @@ $app->get('/verrificationTempsTotal', function() {
             $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
             $test2 = json_decode($test, true);
             $SumDuree = $test2[0];
+            echo $dureeTotale;
 
     /*DB::begin_transaction();
     $sql = "select codeSalle,nom ".
@@ -430,6 +431,105 @@ $app->get('/verrificationDispoGroupe2', function() {
 
 }) ;
 
+$app->get('/verrificationEnseignementProf', function() {
+    $app = Slim\Slim::getInstance() ;
+    $response = $app->response() ;
+    $response->setStatus(200) ;
+    $response->headers->set('Content-Type', 'application/json');
+
+    $seance = $app->request->get('seance');
+
+    $sql = "SELECT codeEnseignement FROM seances WHERE codeSeance=$seance";
+            $stmt = DB::getModule($sql) ;
+            $tuple = DB::getNext($stmt) ;
+            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $codeEnseignement = $test2[0];
+
+    $sql = "SELECT codeRessource FROM seances_profs where codeSeance=$seance";
+            $stmt = DB::getModule($sql) ;
+            $tuple = DB::getNext($stmt) ;
+            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $prof = $test2[0];
+
+    $sql = "SELECT count(*) as num FROM enseignements_profs WHERE codeEnseignement=$codeEnseignement AND codeRessource=$prof";
+            $stmt = DB::getModule($sql) ;
+            $tuple = DB::getNext($stmt) ;
+            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $num = $test2[0];
+           
+    /*if($num=0)
+    {   echo $num;  }*/
+}) ;
+
+$app->get('/verrificationEnseignementGroupe', function() {
+    $app = Slim\Slim::getInstance() ;
+    $response = $app->response() ;
+    $response->setStatus(200) ;
+    $response->headers->set('Content-Type', 'application/json');
+
+    $seance = $app->request->get('seance');
+
+    $sql = "SELECT codeEnseignement FROM seances WHERE codeSeance=$seance";
+            $stmt = DB::getModule($sql) ;
+            $tuple = DB::getNext($stmt) ;
+            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $codeEnseignement = $test2[0];
+
+    $sql = "SELECT codeRessource FROM seances_groupes where codeSeance=$seance";
+            $stmt = DB::getModule($sql) ;
+            $tuple = DB::getNext($stmt) ;
+            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $groupe = $test2[0];
+
+    $sql = "SELECT count(*) as num FROM enseignements_groupes WHERE codeEnseignement=$codeEnseignement AND codeRessource=$groupe";
+            $stmt = DB::getModule($sql) ;
+            $tuple = DB::getNext($stmt) ;
+            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $num = $test2[0];
+           
+    /*if($num=0)
+    {   echo $num;  }*/
+}) ;
+
+$app->get('/verrificationEnseignementSalle', function() {
+    $app = Slim\Slim::getInstance() ;
+    $response = $app->response() ;
+    $response->setStatus(200) ;
+    $response->headers->set('Content-Type', 'application/json');
+
+    $seance = $app->request->get('seance');
+
+    $sql = "SELECT codeEnseignement FROM seances WHERE codeSeance=$seance";
+            $stmt = DB::getModule($sql) ;
+            $tuple = DB::getNext($stmt) ;
+            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $codeEnseignement = $test2[0];
+
+    $sql = "SELECT codeRessource FROM seances_salles where codeSeance=$seance";
+            $stmt = DB::getModule($sql) ;
+            $tuple = DB::getNext($stmt) ;
+            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $salle = $test2[0];
+
+    $sql = "SELECT count(*) as num FROM enseignements_salles WHERE codeEnseignement=$codeEnseignement AND codeRessource=$salle";
+            $stmt = DB::getModule($sql) ;
+            $tuple = DB::getNext($stmt) ;
+            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $num = $test2[0];
+           
+    /*if($num=0)
+    {   echo $num;  }*/
+}) ;
+
 $app->get('/suppression',function() {
         $app = Slim\Slim::getInstance() ; 
             $module = $app->request->get('module');
@@ -466,9 +566,6 @@ $app->get('/suppression',function() {
             $sqlcommand = "UPDATE seances_groupes set deleted=1 , dateModif=now() where codeSeance=$code2";
 
             $stmt = DB::createCour($sqlcommand) ;
-
-
-
     });
 
 $app->get('/creation',function() {
