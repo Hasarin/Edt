@@ -566,6 +566,13 @@ $app->get('/suppression',function() {
             $sqlcommand = "UPDATE seances_groupes set deleted=1 , dateModif=now() where codeSeance=$code2";
 
             $stmt = DB::createCour($sqlcommand) ;
+
+
+            $response = $app->response() ;
+    $response->setStatus(200) ;
+    $response->headers->set('Content-Type', 'application/json');
+
+
     });
 
 $app->get('/creation',function() {
@@ -631,6 +638,7 @@ $app->get('/creation',function() {
 $app->get('/modif',function() {
     $app = Slim\Slim::getInstance() ; 
  
+    
             // lecture des params de post
             $module = $app->request->get('module');
             $module1 = $app->request->get('module1');
@@ -683,7 +691,6 @@ $app->get('/modif',function() {
             $par_heure1 = $app->request->get('heure1');
 
             $sqlcommand2= "SELECT p.codeSeance from seances_profs as p inner join seances as s on p.codeSeance=s.codeSeance where codeRessource=$par_prof and dateSeance='$par_date' and heureSeance=$par_heure and codeEnseignement=$par_cours";
-            echo $sqlcommand2."\n";
 
             $stmt = DB::getModule($sqlcommand2) ;
             $code = DB::getNext($stmt) ;  
@@ -695,7 +702,6 @@ $app->get('/modif',function() {
         //    values ('2017-12-03',1000,200,3201,'',1)";
         $sqlcommand = "UPDATE seances set dateSeance='$par_date1', heureSeance=$par_heure1 ,dureeSeance=$duree1,codeEnseignement=$par_cours1,dateModif=now()
          where codeSeance=$code2" ;
-                    echo $sqlcommand."\n";
 
         $stmt = DB::createCour($sqlcommand) ;
 
@@ -704,22 +710,27 @@ $app->get('/modif',function() {
           where codeSeance=$code2 ";
 
     $stmt = DB::createRessource($sqlcommand2) ;
-                          echo $sqlcommand2."\n";
 
 
         $sqlcommand3 = "UPDATE seances_salles set codeRessource=$par_salle1, dateModif=now()
          where codeSeance=$code2";
 
     $stmt = DB::createRessource($sqlcommand3) ;
-                    echo $sqlcommand3."\n";
 
         $sqlcommand4 = "UPDATE seances_groupes set codeRessource='$par_groupe1', dateModif=now()
          where codeSeance=$code2";;
 
     $stmt = DB::createRessource($sqlcommand4) ;
-                    echo $sqlcommand4."\n";
 
- 
+$response = $app->response() ;
+    $response->setStatus(200) ;
+    $response->headers->set('Content-Type', 'application/json');
+    
+    $b['cle1'] = '200';
+        $b['cle2'] = '200';
+
+    echo json_encode($b, JSON_PRETTY_PRINT) ;
+
     });
 
 

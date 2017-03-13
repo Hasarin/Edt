@@ -13,7 +13,7 @@
     <script src='../js/locale-all.js'></script>
 
 
-<script>
+<script type="text/javascript">
 var loading ;
 var today = new Date() ;
 var calendarData = {
@@ -60,13 +60,15 @@ $(document).ready(function() {
     charger_liste_salle();
     $('#calendar').fullCalendar(calendarData) ;
     charger() ;
+          document.getElementById('truc').style.visibility='hidden';
+
 }) ;
 
 var liste_modules ;
 var liste_groupes ;
 var liste_profs ;
 
-function charger_liste_cours(module) {
+function charger_liste_cours(module,check) {
     console.log(module);
 
     var req = new XMLHttpRequest();
@@ -74,14 +76,22 @@ function charger_liste_cours(module) {
     req.onreadystatechange = function() {
         if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
             var fragment = document.createDocumentFragment();
-            document.getElementById("lb_cours").innerHTML = "";
             liste_modules = JSON.parse(req.response);
             $.each(liste_modules, function() {
                 console.log(this.codeEnseignement);
 
                 fragment.appendChild($("<option />").val(this.codeEnseignement).text('('+this.nom+') '+this.alias)[0]);
             });
-            $("#lb_cours").append(fragment);       }
+            if(check=="lb_cours"){
+                document.getElementById("lb_cours").innerHTML = "";
+                $("#lb_cours").append(fragment); 
+                } 
+            else{
+                document.getElementById("cours1").innerHTML = "";
+                $("#cours1").append(fragment);  
+            }
+
+             }
     } ;
     req.send(null);
     //btn = $('#ihm_Charger').css('display','block');
@@ -96,28 +106,40 @@ function charger_liste_modules() {
         if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
             var fragment = document.createDocumentFragment();
             liste_modules = JSON.parse(req.response);
+
+
             $.each(liste_modules, function() {
                 fragment.appendChild($("<option />").val(this.nom).text('('+this.nom+') '+this.alias)[0]);
             });
-            $("#lb_module").append(fragment);		}
+            $("#lb_module").append(fragment);   
+             $.each(liste_modules, function() {
+                fragment.appendChild($("<option />").val(this.nom).text('('+this.nom+') '+this.alias)[0]);
+            });
+            $("#module1").append(fragment);       }
     } ;
     req.send(null);
+
     btn = $('#ihm_Charger').css('display','block');
 }
 
 function charger_liste_groupes() {
-	var req = new XMLHttpRequest();
-	req.open('GET', 'http://localhost/Edt/rest/index.php/groupes' , true);
-	req.onreadystatechange = function() {
-		if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
-			var fragment = document.createDocumentFragment();
-			liste_groupes = JSON.parse(req.response);
-			$.each(liste_groupes, function() {
-				fragment.appendChild($("<option />").val(this.codeGroupe).text('('+this.nom+') '+this.alias)[0]);
-			});
-			$("#lb_groupe").append(fragment);		}
-	} ;
-	req.send(null);
+    var req = new XMLHttpRequest();
+    req.open('GET', 'http://localhost/Edt/rest/index.php/groupes' , true);
+    req.onreadystatechange = function() {
+        if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
+            var fragment = document.createDocumentFragment();
+
+            liste_groupes = JSON.parse(req.response);
+            $.each(liste_groupes, function() {
+                fragment.appendChild($("<option />").val(this.codeGroupe).text('('+this.nom+') '+this.alias)[0]);
+            });
+            $("#lb_groupe").append(fragment);  
+             $.each(liste_groupes, function() {
+                fragment.appendChild($("<option />").val(this.codeGroupe).text('('+this.nom+') '+this.alias)[0]);
+            }); 
+            $("#groupe1").append(fragment);    }
+    } ;
+    req.send(null);
 }
 
 function charger_liste_salle() {
@@ -127,27 +149,38 @@ function charger_liste_salle() {
         if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
             var fragment = document.createDocumentFragment();
             liste_salle = JSON.parse(req.response);
+
             $.each(liste_salle, function() {
                 fragment.appendChild($("<option />").val(this.codeSalle).text(this.nom)[0]);
             });
-            $("#lb_salle").append(fragment);       }
+            $("#lb_salle").append(fragment);  
+             $.each(liste_salle, function() {
+                fragment.appendChild($("<option />").val(this.codeSalle).text(this.nom)[0]);
+            });
+            $("#salle1").append(fragment);         }
     } ;
     req.send(null);
 }
 
 function charger_liste_profs() {
-	var req = new XMLHttpRequest();
-	req.open('GET', 'http://localhost/Edt/rest/index.php/profs' , true);
-	req.onreadystatechange = function() {
-		if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
-			var fragment = document.createDocumentFragment();
-			liste_profs = JSON.parse(req.response);
-			$.each(liste_profs, function() {
-				fragment.appendChild($("<option />").val(this.codeProf).text(this.alias)[0]);
-			});
-			$("#lb_prof").append(fragment);		}
-	} ;
-	req.send(null);
+    var req = new XMLHttpRequest();
+    req.open('GET', 'http://localhost/Edt/rest/index.php/profs' , true);
+    req.onreadystatechange = function() {
+        if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
+            var fragment = document.createDocumentFragment();
+            liste_profs = JSON.parse(req.response);
+
+            $.each(liste_profs, function() {
+                fragment.appendChild($("<option />").val(this.codeProf).text(this.alias)[0]);
+            });
+
+            $("#lb_prof").append(fragment); $.each(liste_profs, function() {
+                fragment.appendChild($("<option />").val(this.codeProf).text(this.alias)[0]);
+            });    
+            $("#prof1").append(fragment);     
+}
+    } ;
+    req.send(null);
 }
 
 function tt(){
@@ -298,14 +331,81 @@ function modif(){
     var parm = "";
     var prefix = "?" ;
     var requestString ;
+     var module = document.getElementById("lb_module").value;
+        parm = parm + prefix + "module=" + module ;
+        prefix = "&" ;
+    
+        var groupe = document.getElementById("lb_groupe").value;
+        parm = parm + prefix + "groupe=" + groupe ;
+        prefix = "&" ;
+    
+        var prof = document.getElementById("lb_prof").value;
+        parm = parm + prefix + "prof=" + prof ;
+        prefix = "&" ;
+    
+        var salle = document.getElementById("lb_salle").value;
+        parm = parm + prefix + "salle=" + salle ;
+        prefix = "&" ;
+    
+        var heure = document.getElementById("heure").value;
+        parm = parm + prefix + "heure=" + heure ;
+        prefix = "&" ;
+    
+        var cours = document.getElementById("lb_cours").value;
+        parm = parm + prefix + "cours=" + cours ;
+        prefix = "&" ;
+   
+        var date = document.getElementById("date").value ;
+        parm = parm + prefix + "date=" + date ;
+        prefix = "&" ;
 
-    requestString = "./modif.php" ;
+        var date1 = document.getElementById("date1").value ;
+        parm = parm + prefix + "date1=" + date1 ;
+        prefix = "&" ;
+
+        var heure1 = document.getElementById("heure1").value ;
+        parm = parm + prefix + "heure1=" + heure1 ;
+        prefix = "&" ;
+
+        var cours1 = document.getElementById("cours1").value ;
+        parm = parm + prefix + "cours1=" + cours1 ;
+        prefix = "&" ;
+
+        var prof1 = document.getElementById("prof1").value ;
+        parm = parm + prefix + "prof1=" + prof1 ;
+        prefix = "&" ;
+
+        var module1 = document.getElementById("module1").value ;
+        parm = parm + prefix + "module1=" + module1 ;
+        prefix = "&" ;
+       
+        var groupe1 = document.getElementById("groupe1").value ;
+        parm = parm + prefix + "groupe1=" + groupe1 ;
+        prefix = "&" ;
+        
+        var salle1 = document.getElementById("salle1").value ;
+        parm = parm + prefix + "salle1=" + salle1 ;
+        prefix = "&" ;
+    
+     requestString = "http://localhost/Edt/rest/index.php/modif" ;
     if (prefix == "&") {
         requestString = requestString + parm ;
     }
-        document.location.replace(requestString);
+   
+        req.open('GET', requestString, true);
+        req.send(null);
 
+        rep = JSON.parse(req.response);
+        $.each(liste_salle, function() {
+        console.log(this.cle1);
+        });
+
+            
+
+        
 }
+
+
 
 function activate(chkbox) {
     var chk = $(chkbox)[0] ;
@@ -314,10 +414,25 @@ function activate(chkbox) {
     if(chkbox == "#chk_module"){
 
                 var module = $("#lb_module option:selected")[0].value ;
-                charger_liste_cours(module) ;
+                activate2('lb_cours') ;
 
     }
+     
+
 }
+
+function activate2(check) {
+    if(check=="lb_cours"){
+                var module = $("#lb_module option:selected")[0].value ;
+                charger_liste_cours(module,check) ;
+            }
+            else{
+                 var module = $("#module1 option:selected")[0].value ;
+                charger_liste_cours(module,check) ;
+            }
+
+}
+
 function desactivate(chkbox) {
     var chk = $(chkbox)[0] ;
     chk.checked = false;
@@ -326,6 +441,15 @@ function button_enable() {
     $('#calendar').fullCalendar('removeEvents') ;
     // $('#ihm_button').css('display','block');
     charger() ;
+}
+
+function button_modif() {
+    // $('#ihm_button').css('display','block');
+     if(document.getElementById('truc').style.visibility=='hidden')
+      document.getElementById('truc').style.visibility='visible';
+    else
+      document.getElementById('truc').style.visibility='hidden';
+
 }
 
 var loading ;
@@ -455,12 +579,37 @@ function loadingClose() {
         <div>
             <input type='button' value='sup' id='btnCharger' onclick='supprimer()'/>
         </div>
-        <input type='button' value='modif' id='btnCharger' onclick='modif()'/>
+       
+        
         </form>
-            <input type='button' value='actualiser' id='btnCharger' onclick='charger()'/>
+
         <div><p id="erreur"></p></div>
         <input type='button' value='test' id='btntest' onclick='tt()'/>
 
+            <input type='button' value='actualiser' id='btnCharger' onclick='charger()'/></br>
+        modifier ? <input type="checkbox" id="chk_modif" name="modif" onchange="button_modif()"/><br>
+
+        <div id="truc" >
+        MODULES  
+            <select id='module1' onchange='activate2("cours1")'></select>
+       
+      GROUPES  
+            <select id='groupe1' ></select>
+       
+     PROFS   
+            <select id='prof1' ></select>
+       
+      SALLES  
+            <select id='salle1' ></select>
+        
+        HEURE :<input type='number' name='heure1' id='heure1' /> </br>  
+        DATE :<input type='date' name='date1' id='date1' />  
+          
+            COURS <select id='cours1' ></select>
+        <input type='button' value='modif' id='btnCharger' onclick='modif()' />
+
+        </div>
+      </div>
 
     </div>
     <div id="rule"/>
