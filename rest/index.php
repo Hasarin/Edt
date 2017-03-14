@@ -184,6 +184,7 @@ $app->get('/verrificationTempsTotal2', function() {
             $tuple = DB::getNext($stmt) ;
             $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
             $test2 = json_decode($test, true);
+
             $duree = $test2[0];
 
             $sql ="SELECT s.dureeSeance FROM seances s JOIN seances_groupes sg ON s.codeSeance = sg.codeSeance WHERE codeEnseignement=$cours And codeRessource=$groupe And s.deleted =0 ";
