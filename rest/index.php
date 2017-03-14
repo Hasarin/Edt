@@ -279,7 +279,6 @@ $app->get('/verrificationDispoSalle2', function() {
             $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
             $test2 = json_decode($test, true);
             $duree = $test2[0];
-            echo $duree;
 
     $sql ="SELECT COUNT(*)as num  FROM seances s JOIN seances_salles ss ON s.codeSeance = ss.codeSeance WHERE codeRessource=$salle AND s.dateSeance='$date' AND s.heureSeance BETWEEN $heure AND $heure+$duree AND s.deleted =0 ";
             $stmt = DB::getModule($sql) ;
@@ -287,14 +286,10 @@ $app->get('/verrificationDispoSalle2', function() {
             $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
             $test2 = json_decode($test, true);
             $numero = $test2[0];
-            echo $numero;
-    /*if($numero>1)
-    {DB::begin_transaction();
-    $sql = "SELECT *  FROM seances s JOIN seances_salles ss ON s.codeSeance = ss.codeSeance WHERE codeRessource=$codeSalle AND s.dateSeance='$date' AND s.heureSeance BETWEEN $heure AND $heure+$duree AND s.deleted =0 " ;
-    $stmt = DB::execute($sql, array()) ;
-    $items = DB::getAll($stmt) ;
-    DB::transaction_commit() ;
-    echo json_encode($items, JSON_PRETTY_PRINT) ;} */  
+    if($numero>=1)
+    {
+    echo json_encode("Salle deja utilise", JSON_PRETTY_PRINT) ;
+    } 
 
 }) ;
 

@@ -185,7 +185,7 @@ function charger_liste_modules() {
 
             function tt(){
                 var req = new XMLHttpRequest();
-                req.open('GET','http://localhost/Edt/rest/index.php/verrificationTempsTotal?seance=16202820',true);
+                req.open('GET','http://localhost/Edt/rest/index.php/verrificationDispoSalle2?cours=16105965&date=2017-03-09&heure=1330&salle=11631314',true);
                 req.onreadystatechange = function() {
                     if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
                     console.log("test"+"/n");
@@ -396,25 +396,6 @@ function charger_liste_modules() {
                 req.open('GET', requestString, true);
                 req.send(null);
             }
-
-            function tt(){
-    var req = new XMLHttpRequest();
-    var erreur="";
-    req.open('GET','http://localhost/Edt/rest/index.php/verrificationTempsTotal2?cours=16106350&groupe=15824903',true);
-    req.send(null);
-    req.onreadystatechange = function() {
-        if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
-            data = JSON.parse(req.response);
-            erreur=data;
-            if (data!="")
-            {
-                document.getElementById("erreur").append(erreur);
-
-            }  
-        }      
-    };
-    
-}
 
             function modif(){
                 var req = new XMLHttpRequest();
