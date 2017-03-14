@@ -192,7 +192,7 @@ $app->get('/verrificationTempsTotal2', function() {
             $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
             $test2 = json_decode($test, true);
             $SumDuree = $test2[0];
-            echo $SumDuree;
+    echo json_encode($SumDuree, JSON_PRETTY_PRINT) ;
 
     /*DB::begin_transaction();
     $sql = "select codeSalle,nom ".
