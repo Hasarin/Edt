@@ -327,6 +327,16 @@ function charger_liste_modules() {
     if (prefix == "&") {
         requestString = requestString + parm ;
     }
+    checkHeure(requestString);       
+    requestString = "http://localhost/Edt/rest/index.php/creation" ;
+    if (prefix == "&") {
+        requestString = requestString + parm ;
+    }
+        req.open('GET', requestString, true);
+        req.send(null);
+}
+
+function checkHeure(requestString){
         var req = new XMLHttpRequest();
         var erreur="";
         req.open('GET',requestString,true);
@@ -342,13 +352,6 @@ function charger_liste_modules() {
             }  
         }      
     };
-
-    requestString = "http://localhost/Edt/rest/index.php/creation" ;
-    if (prefix == "&") {
-        requestString = requestString + parm ;
-    }
-        req.open('GET', requestString, true);
-        req.send(null);
 }
 
             function supprimer(){
