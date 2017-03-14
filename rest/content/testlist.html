@@ -185,12 +185,21 @@ function charger_liste_profs() {
 
 function tt(){
     var req = new XMLHttpRequest();
-    req.open('GET','http://localhost/Edt/rest/index.php/verrificationTempsTotal?seance=16202820',true);
-    req.onreadystatechange = function() {
-        data = JSON.parse(req.response);
-        document.getElementById("erreur").append(data);
-    };
+    var erreur="";
+    req.open('GET','http://localhost/Edt/rest/index.php/verrificationTempsTotal2?cours=16106350&groupe=15824903',true);
     req.send(null);
+    req.onreadystatechange = function() {
+        if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
+            data = JSON.parse(req.response);
+            erreur=data;
+            if (data!="")
+            {
+                document.getElementById("erreur").append(erreur);
+
+            }  
+        }      
+    };
+    
 }
 
 function charger() {
@@ -271,7 +280,19 @@ function create(){
         var date = document.getElementById("date").value ;
         parm = parm + prefix + "date=" + date ;
         prefix = "&" ;
-    
+
+    /*    requestString = "http://localhost/Edt/rest/index.php/verrificationTempsTotal2" ;
+    if (prefix == "&") {
+        requestString = requestString + parm ;
+    }
+        var req = new XMLHttpRequest();
+        req.open('GET',requestString,true);
+        req.onreadystatechange = function() {
+            data = JSON.parse(req.response);
+            document.getElementById("erreur").append(data);
+        };
+        req.send(null);
+    */
     requestString = "http://localhost/Edt/rest/index.php/creation" ;
     if (prefix == "&") {
         requestString = requestString + parm ;

@@ -169,38 +169,54 @@ $app->get('/verrificationTempsTotal2', function() {
     $response->setStatus(200) ;
     $response->headers->set('Content-Type', 'application/json');
 
-    $seance = $app->request->get('seance');
-    $duree = $app->request->get('duree');
+    $cours = $app->request->get('cours');
+    $groupe = $app->request->get('groupe');
 
-    $sql = "SELECT codeEnseignement FROM seances WHERE codeSeance=$seance";
-            $stmt = DB::getModule($sql) ;
-            $tuple = DB::getNext($stmt) ;
-            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
-            $test2 = json_decode($test, true);
-            $codeEnseignement = $test2[0]; 
-
-    $sql = "SELECT dureeTotale FROM enseignements where codeEnseignement=$codeEnseignement";
+    $sql = "SELECT dureeTotale FROM enseignements where codeEnseignement=$cours";
             $stmt = DB::getModule($sql) ;
             $tuple = DB::getNext($stmt) ;
             $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
             $test2 = json_decode($test, true);
             $dureeTotale = $test2[0];
 
-    $sql ="SELECT SUM(s.dureeSeance) FROM seances s JOIN seances_groupes sg ON s.codeSeance = sg.codeSeance WHERE codeEnseignement=$codeEnseignement And s.deleted =0 ";
+    $sql ="SELECT dureeSeance FROM enseignements WHERE codeEnseignement=$cours";
             $stmt = DB::getModule($sql) ;
             $tuple = DB::getNext($stmt) ;
             $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
             $test2 = json_decode($test, true);
-            $SumDuree = $test2[0];
-            echo $SumDuree;
+            $duree = $test2[0];
 
-    /*DB::begin_transaction();
-    $sql = "select codeSalle,nom ".
-        "from ressources_salles s  ;" ;
-    $stmt = DB::execute($sql, array()) ;
-    $items = DB::getAll($stmt) ;
-    DB::transaction_commit() ;
-    echo json_encode($SumDuree, JSON_PRETTY_PRINT) ;*/
+            $sql ="SELECT s.dureeSeance FROM seances s JOIN seances_groupes sg ON s.codeSeance = sg.codeSeance WHERE codeEnseignement=$cours And codeRessource=$groupe And s.deleted =0 ";
+            $stmt = DB::getModule($sql) ;
+            $tuple = DB::getAll($stmt) ;
+            $min=0;
+            $heur=0;
+            foreach ($tuple as $row) 
+            {
+                $m = substr($row["dureeSeance"], -2);
+                $h = substr($row["dureeSeance"], 0,-2); 
+                $min+=$m;
+                $heur+=$h;
+            }
+
+            $m= substr($duree, -2);
+            $h= substr($duree, 0,-2);
+            $min+=$m;
+            $heur+=$h;
+            $hsup=$min/60;
+            $hsup=floor($hsup);
+            $heur+=$hsup;
+            $mrest=$min%60;
+            if ($mrest==0) 
+            {
+                $mrest="00";
+            }
+            $SumDuree=$heur.=$mrest;
+
+    if($dureeTotale<$SumDuree)
+    {
+        echo json_encode("Depassement de Total enseignement : ".$SumDuree."/".$dureeTotale, JSON_PRETTY_PRINT) ;
+    }
 }) ;
 
 $app->get('/verrificationDispoSalle', function() {
@@ -251,19 +267,19 @@ $app->get('/verrificationDispoSalle2', function() {
     $response->setStatus(200) ;
     $response->headers->set('Content-Type', 'application/json');
 
-    $seance = $app->request->get('seance');
+    $cours = $app->request->get('cours');
     $date = $app->request->get('date');
     $heure = $app->request->get('heure');
-    $duree = $app->request->get('duree');
+    $salle = $app->request->get('salle');
 
-    $sql = "SELECT codeRessource FROM seances_salles WHERE codeSeance=$seance";
+ $sql ="SELECT dureeSeance FROM enseignements WHERE codeEnseignement=$cours";
             $stmt = DB::getModule($sql) ;
             $tuple = DB::getNext($stmt) ;
             $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
             $test2 = json_decode($test, true);
-            $codeSalle = $test2[0];             
+            $duree = $test2[0];
 
-    $sql ="SELECT COUNT(*)as num  FROM seances s JOIN seances_salles ss ON s.codeSeance = ss.codeSeance WHERE codeRessource=$codeSalle AND s.dateSeance='$date' AND s.heureSeance BETWEEN $heure AND $heure+$duree AND s.deleted =0 ";
+    $sql ="SELECT COUNT(*)as num  FROM seances s JOIN seances_salles ss ON s.codeSeance = ss.codeSeance WHERE codeRessource=$salle AND s.dateSeance='$date' AND s.heureSeance BETWEEN $heure AND $heure+$duree AND s.deleted =0 ";
             $stmt = DB::getModule($sql) ;
             $tuple = DB::getNext($stmt) ;
             $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
@@ -327,19 +343,19 @@ $app->get('/verrificationDispoProf2', function() {
     $response->setStatus(200) ;
     $response->headers->set('Content-Type', 'application/json');
 
-    $seance = $app->request->get('seance');
+    $cours = $app->request->get('cours');
     $date = $app->request->get('date');
     $heure = $app->request->get('heure');
-    $duree = $app->request->get('duree');
+    $prof = $app->request->get('prof');
 
-    $sql = "SELECT codeRessource FROM seances_profs WHERE codeSeance=$seance";
+     $sql ="SELECT dureeSeance FROM enseignements WHERE codeEnseignement=$cours";
             $stmt = DB::getModule($sql) ;
             $tuple = DB::getNext($stmt) ;
             $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
             $test2 = json_decode($test, true);
-            $codeProf = $test2[0];            
+            $duree = $test2[0];          
 
-    $sql ="SELECT COUNT(*)as num  FROM seances s JOIN seances_profs ss ON s.codeSeance = ss.codeSeance WHERE codeRessource=$codeProf AND s.dateSeance='$date' AND s.heureSeance BETWEEN $heure AND $heure+$duree AND s.deleted =0 ";
+    $sql ="SELECT COUNT(*)as num  FROM seances s JOIN seances_profs ss ON s.codeSeance = ss.codeSeance WHERE codeRessource=$prof AND s.dateSeance='$date' AND s.heureSeance BETWEEN $heure AND $heure+$duree AND s.deleted =0 ";
             $stmt = DB::getModule($sql) ;
             $tuple = DB::getNext($stmt) ;
             $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
@@ -403,19 +419,19 @@ $app->get('/verrificationDispoGroupe2', function() {
     $response->setStatus(200) ;
     $response->headers->set('Content-Type', 'application/json');
 
-     $seance = $app->request->get('seance');
+    $seance = $app->request->get('cours');
     $date = $app->request->get('date');
     $heure = $app->request->get('heure');
-    $duree = $app->request->get('duree');
+    $groupe = $app->request->get('groupe');
 
-    $sql = "SELECT codeRessource FROM seances_groupes WHERE codeSeance=$seance";
+     $sql ="SELECT dureeSeance FROM enseignements WHERE codeEnseignement=$cours";
             $stmt = DB::getModule($sql) ;
             $tuple = DB::getNext($stmt) ;
             $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
             $test2 = json_decode($test, true);
-            $codeGroupe = $test2[0]; 
+            $duree = $test2[0];
 
-    $sql ="SELECT COUNT(*)as num  FROM seances s JOIN seances_groupes ss ON s.codeSeance = ss.codeSeance WHERE codeRessource=$codeGroupe AND s.dateSeance='$date' AND s.heureSeance BETWEEN $heure AND $heure+$duree AND s.deleted =0 ";
+    $sql ="SELECT COUNT(*)as num  FROM seances s JOIN seances_groupes ss ON s.codeSeance = ss.codeSeance WHERE codeRessource=$groupe AND s.dateSeance='$date' AND s.heureSeance BETWEEN $heure AND $heure+$duree AND s.deleted =0 ";
             $stmt = DB::getModule($sql) ;
             $tuple = DB::getNext($stmt) ;
             $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
@@ -464,6 +480,26 @@ $app->get('/verrificationEnseignementProf', function() {
     {   echo $num;  }*/
 }) ;
 
+$app->get('/verrificationEnseignementProf2', function() {
+    $app = Slim\Slim::getInstance() ;
+    $response = $app->response() ;
+    $response->setStatus(200) ;
+    $response->headers->set('Content-Type', 'application/json');
+
+    $cours = $app->request->get('cours');
+    $prof = $app->request->get('prof');
+
+    $sql = "SELECT count(*) as num FROM enseignements_profs WHERE codeEnseignement=$cours AND codeRessource=$prof";
+            $stmt = DB::getModule($sql) ;
+            $tuple = DB::getNext($stmt) ;
+            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $num = $test2[0];
+           
+    /*if($num=0)
+    {   echo $num;  }*/
+}) ;
+
 $app->get('/verrificationEnseignementGroupe', function() {
     $app = Slim\Slim::getInstance() ;
     $response = $app->response() ;
@@ -497,7 +533,27 @@ $app->get('/verrificationEnseignementGroupe', function() {
     {   echo $num;  }*/
 }) ;
 
-$app->get('/verrificationEnseignementSalle', function() {
+$app->get('/verrificationEnseignementGroupe2', function() {
+    $app = Slim\Slim::getInstance() ;
+    $response = $app->response() ;
+    $response->setStatus(200) ;
+    $response->headers->set('Content-Type', 'application/json');
+
+    $cours = $app->request->get('cours');
+    $groupe = $app->request->get('groupe');
+
+    $sql = "SELECT count(*) as num FROM enseignements_groupes WHERE codeEnseignement=$cours AND codeRessource=$groupe";
+            $stmt = DB::getModule($sql) ;
+            $tuple = DB::getNext($stmt) ;
+            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
+            $test2 = json_decode($test, true);
+            $num = $test2[0];
+           
+    /*if($num=0)
+    {   echo $num;  }*/
+}) ;
+
+/*$app->get('/verrificationEnseignementSalle', function() {
     $app = Slim\Slim::getInstance() ;
     $response = $app->response() ;
     $response->setStatus(200) ;
@@ -526,9 +582,9 @@ $app->get('/verrificationEnseignementSalle', function() {
             $test2 = json_decode($test, true);
             $num = $test2[0];
            
-    /*if($num=0)
-    {   echo $num;  }*/
-}) ;
+    //if($num=0)
+    //{   echo $num;  }
+}) ;*/
 
 $app->get('/suppression',function() {
         $app = Slim\Slim::getInstance() ; 
