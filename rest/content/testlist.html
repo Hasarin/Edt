@@ -323,18 +323,26 @@ function charger_liste_modules() {
         parm = parm + prefix + "date=" + date ;
         prefix = "&" ;
 
-    /*    requestString = "http://localhost/Edt/rest/index.php/verrificationTempsTotal2" ;
+        requestString = "http://localhost/Edt/rest/index.php/verrificationTempsTotal2" ;
     if (prefix == "&") {
         requestString = requestString + parm ;
     }
         var req = new XMLHttpRequest();
+        var erreur="";
         req.open('GET',requestString,true);
-        req.onreadystatechange = function() {
-            data = JSON.parse(req.response);
-            document.getElementById("erreur").append(data);
-        };
         req.send(null);
-    */
+        req.onreadystatechange = function() {
+        if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
+            data = JSON.parse(req.response);
+            erreur=data;
+            if (data!="")
+            {
+                document.getElementById("erreur").append(erreur);
+
+            }  
+        }      
+    };
+
     requestString = "http://localhost/Edt/rest/index.php/creation" ;
     if (prefix == "&") {
         requestString = requestString + parm ;
