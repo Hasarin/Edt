@@ -267,6 +267,7 @@ function charger_liste_modules() {
                 parm = parm + prefix + "heure=" + heure ;
                 prefix = "&" ;
 
+
                 var cours = $("#lb_cours option:selected")[0].value ;
                 parm = parm + prefix + "cours=" + cours ;
                 prefix = "&" ;
@@ -275,6 +276,7 @@ function charger_liste_modules() {
                 parm = parm + prefix + "date=" + date ;
                 prefix = "&" ;
 
+
                 requestString = "http://localhost/Edt/rest/index.php/creation" ;
                 if (prefix == "&") {
                     requestString = requestString + parm ;
@@ -282,6 +284,64 @@ function charger_liste_modules() {
                 req.open('GET', requestString, true);
                 req.send(null);
             }
+
+    function create(){
+    var req = new XMLHttpRequest();
+    var parm = "";
+    var prefix = "?" ;
+    var requestString ;
+    if ($('#chk_module')[0].checked) {
+        var module = $("#lb_module option:selected")[0].value ;
+        parm = parm + prefix + "module=" + module ;
+        prefix = "&" ;
+    }
+    if ($('#chk_groupe')[0].checked) {
+        var groupe = $("#lb_groupe option:selected")[0].value ;
+        parm = parm + prefix + "groupe=" + groupe ;
+        prefix = "&" ;
+    }
+    if ($('#chk_prof')[0].checked) {
+        var prof = $("#lb_prof option:selected")[0].value ;
+        parm = parm + prefix + "prof=" + prof ;
+        prefix = "&" ;
+    }
+    if ($('#chk_salle')[0].checked) {
+        var salle = $("#lb_salle option:selected")[0].value ;
+        parm = parm + prefix + "salle=" + salle ;
+        prefix = "&" ;
+    }
+    
+        var heure = document.getElementById("heure").value;
+        parm = parm + prefix + "heure=" + heure ;
+        prefix = "&" ;
+    
+        var cours = $("#lb_cours option:selected")[0].value ;
+        parm = parm + prefix + "cours=" + cours ;
+        prefix = "&" ;
+   
+        var date = document.getElementById("date").value ;
+        parm = parm + prefix + "date=" + date ;
+        prefix = "&" ;
+
+    /*    requestString = "http://localhost/Edt/rest/index.php/verrificationTempsTotal2" ;
+    if (prefix == "&") {
+        requestString = requestString + parm ;
+    }
+        var req = new XMLHttpRequest();
+        req.open('GET',requestString,true);
+        req.onreadystatechange = function() {
+            data = JSON.parse(req.response);
+            document.getElementById("erreur").append(data);
+        };
+        req.send(null);
+    */
+    requestString = "http://localhost/Edt/rest/index.php/creation" ;
+    if (prefix == "&") {
+        requestString = requestString + parm ;
+    }
+        req.open('GET', requestString, true);
+        req.send(null);
+}
 
             function supprimer(){
                 var req = new XMLHttpRequest();
@@ -328,6 +388,25 @@ function charger_liste_modules() {
                 req.open('GET', requestString, true);
                 req.send(null);
             }
+
+            function tt(){
+    var req = new XMLHttpRequest();
+    var erreur="";
+    req.open('GET','http://localhost/Edt/rest/index.php/verrificationTempsTotal2?cours=16106350&groupe=15824903',true);
+    req.send(null);
+    req.onreadystatechange = function() {
+        if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
+            data = JSON.parse(req.response);
+            erreur=data;
+            if (data!="")
+            {
+                document.getElementById("erreur").append(erreur);
+
+            }  
+        }      
+    };
+    
+}
 
             function modif(){
                 var req = new XMLHttpRequest();
