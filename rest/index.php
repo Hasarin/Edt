@@ -731,7 +731,7 @@ $app->get('/modif',function() {
  
             // lecture des params de post
             $module = $app->request->get('module');
-            $module1 = $app->request->get('module1');
+            $codeSeance = $app->request->get('id');
 
             $sql = "select codeMatiere FROM matieres where nom='$module'";
             $stmt = DB::getModule($sql) ;
@@ -740,18 +740,9 @@ $app->get('/modif',function() {
             $test2 = json_decode($test, true);
             $module = $test2[0];
 
-            $sql = "select codeMatiere FROM matieres where nom='$module1'";
-            $stmt = DB::getModule($sql) ;
-            $module1 = DB::getNext($stmt) ;
-            $test = json_encode($module1, JSON_PRETTY_PRINT) ;
-            $test2 = json_decode($test, true);
-            $module1 = $test2[0];
-
             $par_prof = $app->request->get('prof');
-            $par_prof1 = $app->request->get('prof1');
 
             $par_cours = $app->request->get('cours');
-            $par_cours1 = $app->request->get('cours1');
 
             $sql = "select dureeSeance FROM enseignements where codeEnseignement=$par_cours";
             $stmt = DB::getModule($sql) ;
@@ -760,66 +751,35 @@ $app->get('/modif',function() {
             $test2 = json_decode($test, true);
             $duree = $test2[0];
 
-            $sql = "select dureeSeance FROM enseignements where codeEnseignement=$par_cours1";
-            $stmt = DB::getModule($sql) ;
-            $module = DB::getNext($stmt) ;
-            $test = json_encode($module, JSON_PRETTY_PRINT) ;
-            $test2 = json_decode($test, true);
-            $duree1 = $test2[0];
-
-
             $par_salle = $app->request->get('salle');
-            $par_salle1 = $app->request->get('salle1');
 
             $par_groupe = $app->request->get('groupe');
-            $par_groupe1 = $app->request->get('groupe1');
 
             $par_date = $app->request->get('date');
-            $par_date1 = $app->request->get('date1');
 
             $par_heure = $app->request->get('heure');
-            $par_heure1 = $app->request->get('heure1');
 
-            $sqlcommand2= "SELECT p.codeSeance from seances_profs as p inner join seances as s on p.codeSeance=s.codeSeance where codeRessource=$par_prof and dateSeance='$par_date' and heureSeance=$par_heure and codeEnseignement=$par_cours";
-
-            $stmt = DB::getModule($sqlcommand2) ;
-            $code = DB::getNext($stmt) ;  
-            $test = json_encode($code, JSON_PRETTY_PRINT) ;
-            $test2 = json_decode($test, true);
-            $code2 = $test2[0];
-    
-       // $sqlcommand = "INSERT INTO seances(dateSeance,heureSeance,dureeSeance,codeEnseignement,commentaire,diffusable)
-        //    values ('2017-12-03',1000,200,3201,'',1)";
-        $sqlcommand = "UPDATE seances set dateSeance='$par_date1', heureSeance=$par_heure1 ,dureeSeance=$duree1,codeEnseignement=$par_cours1,dateModif=now()
-         where codeSeance=$code2" ;
+        $sqlcommand = "UPDATE seances set dateSeance='$par_date', heureSeance=$par_heure ,dureeSeance=$duree,codeEnseignement=$par_cours,dateModif=now()
+         where codeSeance=$codeSeance" ;
 
         $stmt = DB::createCour($sqlcommand) ;
 
 
-        $sqlcommand2 = "UPDATE seances_profs set codeRessource=$par_prof1, dateModif=now()
-          where codeSeance=$code2 ";
+        $sqlcommand2 = "UPDATE seances_profs set codeRessource=$par_prof, dateModif=now()
+          where codeSeance=$codeSeance ";
 
     $stmt = DB::createRessource($sqlcommand2) ;
 
 
-        $sqlcommand3 = "UPDATE seances_salles set codeRessource=$par_salle1, dateModif=now()
-         where codeSeance=$code2";
+        $sqlcommand3 = "UPDATE seances_salles set codeRessource=$par_salle, dateModif=now()
+         where codeSeance=$codeSeance";
 
     $stmt = DB::createRessource($sqlcommand3) ;
 
-        $sqlcommand4 = "UPDATE seances_groupes set codeRessource='$par_groupe1', dateModif=now()
-         where codeSeance=$code2";;
+        $sqlcommand4 = "UPDATE seances_groupes set codeRessource='$par_groupe', dateModif=now()
+         where codeSeance=$codeSeance";
 
     $stmt = DB::createRessource($sqlcommand4) ;
-
-$response = $app->response() ;
-    $response->setStatus(200) ;
-    $response->headers->set('Content-Type', 'application/json');
-    
-    $b['cle1'] = '200';
-        $b['cle2'] = '200';
-
-    echo json_encode($b, JSON_PRETTY_PRINT) ;
 
     });
 
