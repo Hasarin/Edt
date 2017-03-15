@@ -437,7 +437,7 @@ function check(requestString){
                 var parm = "";
                 var prefix = "?" ;
                 var requestString ;
-                if ($('#chk_module')[0].checked) {
+                /*if ($('#chk_module')[0].checked) {
                     var module = $("#lb_module option:selected")[0].value ;
                     parm = parm + prefix + "module=" + module ;
                     prefix = "&" ;
@@ -468,6 +468,10 @@ function check(requestString){
 
                 var date = document.getElementById("date").value ;
                 parm = parm + prefix + "date=" + date ;
+                prefix = "&" ;*/
+
+                 var id = document.getElementById("id2").value;
+                parm = parm + prefix + "id=" + id ;
                 prefix = "&" ;
 
                 requestString = "http://localhost/Edt/rest/index.php/suppression" ;
@@ -735,16 +739,11 @@ body {
             COURS <select id='lb_cours' ></select>
         </div>
         <div>
-            <input type='button' value='Charger' id='btnCharger' onclick='create()'/>
+            <input type='button' value='creation' id='btnCharger' onclick='create()'/>
         </div>
-        <div>
-            <input type='button' value='sup' id='btnCharger' onclick='supprimer()'/>
-        </div>
-    </fieldset>
-
         
-    </form>
-        <div id="truc2" >
+    </fieldset>
+    <div id="truc2" >
 
     <div><p id="erreur"></p></div>
       <div><p id="question"></p></div>
@@ -752,6 +751,15 @@ body {
             <input type='button' value='refuser' id='refuser' onclick='dehidden()' />
 
         </div>
+    <fieldset>
+        <div>
+            id : <input type="number"  name="id2" id="id2"/>
+
+            <input type='button' value='sup' id='btnCharger' onclick='supprimer()'/>
+        </div>
+    </fieldset>
+    </form>
+        
         <fieldset>
 
    
