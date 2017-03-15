@@ -488,7 +488,7 @@ $app->get('/verrificationDispoGroupe2', function() {
 
          if($numero>=1)
     {
-    echo json_encode("Professeur deja en cours", JSON_PRETTY_PRINT) ;
+    echo json_encode("Groupe deja en cours", JSON_PRETTY_PRINT) ;
     }      
 }) ;
 
@@ -644,22 +644,8 @@ $app->get('/suppression',function() {
             $test = json_encode($module, JSON_PRETTY_PRINT) ;
             $test2 = json_decode($test, true);
             $module = $test2[0];
-            
-            $par_prof = $app->request->get('prof');
-            $par_cours = $app->request->get('cours');
-            $par_salle = $app->request->get('salle');
-            $par_groupe = $app->request->get('groupe');
-            $par_date = $app->request->get('date');
-            $par_heure = $app->request->get('heure');
-           
-            $sqlcommand2= "SELECT p.codeSeance from seances_profs as p inner join seances as s on p.codeSeance=s.codeSeance where codeRessource=$par_prof
-             and dateSeance='$par_date' and heureSeance=$par_heure and codeEnseignement=$par_cours";
-
-            $stmt = DB::getModule($sqlcommand2) ;
-            $code = DB::getNext($stmt) ;  
-            $test = json_encode($code, JSON_PRETTY_PRINT) ;
-            $test2 = json_decode($test, true);
-            $code2 = $test2[0];        
+                
+            $code2 = $app->request->get('id');
 
             $sqlcommand = "UPDATE seances set deleted=1 ,dateModif=now() where codeSeance=$code2" ;
             $stmt = DB::createCour($sqlcommand) ;
@@ -911,7 +897,7 @@ EOT;
 
         $temp["start"] = $start_date->format(DateTime::ATOM) ;
         $temp["end"] = $end_date->format(DateTime::ATOM) ;
-        $temp["title"] = $row["Enseignement"]."\t".$row["Groupe"]."\t".$row["Prof"]."\t".$row["Salle"]  ;
+        $temp["title"] = $row["Enseignement"]."\t".$row["Groupe"]."\t".$row["Prof"]."\t".$row["Salle"]."\t".$row["codeSeance"]  ;
         $r = ($row["couleurFond"]) & 0xFF ;
         $g = ($row["couleurFond"] >> 8) & 0xFF ;
         $b = ($row["couleurFond"] >> 16) & 0xFF ;

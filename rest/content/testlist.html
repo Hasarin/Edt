@@ -60,6 +60,8 @@
         $('#calendar').fullCalendar(calendarData) ;
         charger() ;
         document.getElementById('truc').style.visibility='hidden';
+                document.getElementById('truc2').style.visibility='hidden';
+
 
     }) ;
 
@@ -235,13 +237,206 @@ function charger_liste_modules() {
                 req.send(null);
                 $('#ihm_button').css('display','none');
             }
+    function create(){
+    document.getElementById("erreur").innerHTML = "";
 
-            function create(){
+    var req = new XMLHttpRequest();
+    var parm = "";
+    var prefix = "?" ;
+    var requestString ;
+    if ($('#chk_module')[0].checked) {
+        var module = $("#lb_module option:selected")[0].value ;
+        parm = parm + prefix + "module=" + module ;
+        prefix = "&" ;
+    }
+    if ($('#chk_groupe')[0].checked) {
+        var groupe = $("#lb_groupe option:selected")[0].value ;
+        parm = parm + prefix + "groupe=" + groupe ;
+        prefix = "&" ;
+    }
+    if ($('#chk_prof')[0].checked) {
+        var prof = $("#lb_prof option:selected")[0].value ;
+        parm = parm + prefix + "prof=" + prof ;
+        prefix = "&" ;
+    }
+    if ($('#chk_salle')[0].checked) {
+        var salle = $("#lb_salle option:selected")[0].value ;
+        parm = parm + prefix + "salle=" + salle ;
+        prefix = "&" ;
+    }
+    
+        var heure = document.getElementById("heure").value;
+        parm = parm + prefix + "heure=" + heure ;
+        prefix = "&" ;
+    
+        var cours = $("#lb_cours option:selected")[0].value ;
+        parm = parm + prefix + "cours=" + cours ;
+        prefix = "&" ;
+   
+        var date = document.getElementById("date").value ;
+        parm = parm + prefix + "date=" + date ;
+        prefix = "&" ;
+
+        requestString = "http://localhost/Edt/rest/index.php/verrificationTempsTotal2" ;
+    if (prefix == "&") {
+        requestString = requestString + parm ;
+    }
+    checkHeure(requestString);
+
+        requestString = "http://localhost/Edt/rest/index.php/verrificationDispoSalle2" ;
+    if (prefix == "&") {
+        requestString = requestString + parm ;
+    }
+    check(requestString);
+
+        requestString = "http://localhost/Edt/rest/index.php/verrificationDispoProf2" ;
+    if (prefix == "&") {
+        requestString = requestString + parm ;
+    }
+    check(requestString);
+
+        requestString = "http://localhost/Edt/rest/index.php/verrificationDispoGroupe2" ;
+    if (prefix == "&") {
+        requestString = requestString + parm ;
+    }
+    check(requestString);
+
+     requestString = "http://localhost/Edt/rest/index.php/verrificationEnseignementProf2" ;
+    if (prefix == "&") {
+        requestString = requestString + parm ;
+    }
+    check(requestString);
+
+     requestString = "http://localhost/Edt/rest/index.php/verrificationEnseignementGroupe2" ;
+    if (prefix == "&") {
+        requestString = requestString + parm ;
+    }
+    check(requestString);
+                document.getElementById("question").append("voulez-vous ajouter ce cours ?"+"\r");
+                document.getElementById('truc2').style.visibility='visible';
+
+
+
+   /* requestString = "http://localhost/Edt/rest/index.php/creation" ;
+    if (prefix == "&") {
+        requestString = requestString + parm ;
+    }
+        req.open('GET', requestString, true);
+        req.send(null);
+        */
+}
+
+function valider(){
+
+    var req = new XMLHttpRequest();
+    var parm = "";
+    var prefix = "?" ;
+    var requestString ;
+    if ($('#chk_module')[0].checked) {
+        var module = $("#lb_module option:selected")[0].value ;
+        parm = parm + prefix + "module=" + module ;
+        prefix = "&" ;
+    }
+    if ($('#chk_groupe')[0].checked) {
+        var groupe = $("#lb_groupe option:selected")[0].value ;
+        parm = parm + prefix + "groupe=" + groupe ;
+        prefix = "&" ;
+    }
+    if ($('#chk_prof')[0].checked) {
+        var prof = $("#lb_prof option:selected")[0].value ;
+        parm = parm + prefix + "prof=" + prof ;
+        prefix = "&" ;
+    }
+    if ($('#chk_salle')[0].checked) {
+        var salle = $("#lb_salle option:selected")[0].value ;
+        parm = parm + prefix + "salle=" + salle ;
+        prefix = "&" ;
+    }
+    
+        var heure = document.getElementById("heure").value;
+        parm = parm + prefix + "heure=" + heure ;
+        prefix = "&" ;
+    
+        var cours = $("#lb_cours option:selected")[0].value ;
+        parm = parm + prefix + "cours=" + cours ;
+        prefix = "&" ;
+   
+        var date = document.getElementById("date").value ;
+        parm = parm + prefix + "date=" + date ;
+        prefix = "&" ;
+
+        
+
+    requestString = "http://localhost/Edt/rest/index.php/creation" ;
+    if (prefix == "&") {
+        requestString = requestString + parm ;
+    }
+        req.open('GET', requestString, true);
+        req.send(null);
+
+        document.getElementById("question").innerHTML = "Insertion effectué";
+        document.getElementById("truc2").innerHTML = "";
+
+        document.getElementById('truc2').style.visibility='hidden';
+
+        
+}
+
+function dehidden(){
+          document.getElementById('truc2').style.visibility='hidden';
+
+}
+
+function checkHeure(requestString){
+        var req = new XMLHttpRequest();
+        var erreur="";
+        req.open('GET',requestString,true);
+        req.send(null);
+        req.onreadystatechange = function() {
+        if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
+            data = JSON.parse(req.response);
+            erreur=data;
+            if (data!="")
+            {
+                document.getElementById("erreur").append(erreur);
+                var node = document.createElement("BR");
+                document.getElementById("erreur").appendChild(node);
+
+
+            }  
+        }      
+    };
+}
+
+function check(requestString){
+        var req = new XMLHttpRequest();
+        var erreur="";
+        req.open('GET',requestString,true);
+        req.send(null);
+        req.onreadystatechange = function() {
+        if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
+            data = JSON.parse(req.response);
+            erreur=data;
+            if (data!="")
+            {
+                document.getElementById("erreur").append(erreur+"\n");
+                var node = document.createElement("BR");
+                document.getElementById("erreur").appendChild(node);
+
+            }  
+        }   
+
+    };
+}
+
+            function supprimer(){
+                document.getElementById("erreur").innerHTML = "";
+
                 var req = new XMLHttpRequest();
                 var parm = "";
                 var prefix = "?" ;
                 var requestString ;
-                if ($('#chk_module')[0].checked) {
+                /*if ($('#chk_module')[0].checked) {
                     var module = $("#lb_module option:selected")[0].value ;
                     parm = parm + prefix + "module=" + module ;
                     prefix = "&" ;
@@ -272,214 +467,96 @@ function charger_liste_modules() {
                 
                 var date = document.getElementById("date").value ;
                 parm = parm + prefix + "date=" + date ;
+                prefix = "&" ;*/
+
+                 var id = document.getElementById("id2").value;
+                parm = parm + prefix + "id=" + id ;
                 prefix = "&" ;
 
-                requestString = "http://localhost/Edt/rest/index.php/verrificationTempsTotal2" ;
+                requestString = "http://localhost/Edt/rest/index.php/suppression" ;
                 if (prefix == "&") {
                     requestString = requestString + parm ;
                 }
-                checkHeure(requestString);
+                req.open('GET',requestString,true);
+                req.send(null);
 
-                requestString = "http://localhost/Edt/rest/index.php/verrificationDispoSalle2" ;
+                }
+
+                function modif(){
+                document.getElementById("erreur").innerHTML = "";
+
+                var req = new XMLHttpRequest();
+                var parm = "";
+                var prefix = "?" ;
+                var requestString ;
+                var module = document.getElementById("module1").value;
+                parm = parm + prefix + "module=" + module ;
+                prefix = "&" ;
+
+                var groupe = document.getElementById("groupe1").value;
+                parm = parm + prefix + "groupe=" + groupe ;
+                prefix = "&" ;
+
+                var prof = document.getElementById("prof1").value;
+                parm = parm + prefix + "prof=" + prof ;
+                prefix = "&" ;
+
+                var salle = document.getElementById("salle1").value;
+                parm = parm + prefix + "salle=" + salle ;
+                prefix = "&" ;
+
+                var heure = document.getElementById("heure1").value;
+                parm = parm + prefix + "heure=" + heure ;
+                prefix = "&" ;
+
+                var cours = document.getElementById("cours1").value;
+                parm = parm + prefix + "cours=" + cours ;
+                prefix = "&" ;
+
+                var date = document.getElementById("date1").value ;
+                parm = parm + prefix + "date=" + date ;
+                prefix = "&" ;
+
+                var id = document.getElementById("id").value ;
+                parm = parm + prefix + "id=" + id ;
+                prefix = "&" ;
+
+               /* var date1 = document.getElementById("date").value ;
+                parm = parm + prefix + "date=" + date1 ;
+                prefix = "&" ;
+
+                var heure1 = document.getElementById("heure").value ;
+                parm = parm + prefix + "heure=" + heure1 ;
+                prefix = "&" ;
+
+                var cours1 = document.getElementById("lb_cours").value ;
+                parm = parm + prefix + "cours=" + cours1 ;
+                prefix = "&" ;
+
+                var prof1 = document.getElementById("lb_prof").value ;
+                parm = parm + prefix + "prof=" + prof1 ;
+                prefix = "&" ;
+
+                var module1 = document.getElementById("lb_module").value ;
+                parm = parm + prefix + "module=" + module1 ;
+                prefix = "&" ;
+
+                var groupe1 = document.getElementById("lb_groupe").value ;
+                parm = parm + prefix + "groupe=" + groupe1 ;
+                prefix = "&" ;
+
+                var salle1 = document.getElementById("lb_salle").value ;
+                parm = parm + prefix + "salle=" + salle1 ;
+                prefix = "&" ;*/
+
+                requestString = "http://localhost/Edt/rest/index.php/modif" ;
                 if (prefix == "&") {
                     requestString = requestString + parm ;
                 }
-                check(requestString);
+                req.open('GET',requestString,true);
+                req.send(null);
 
-                requestString = "http://localhost/Edt/rest/index.php/verrificationDispoProf2" ;
-                if (prefix == "&") {
-                    requestString = requestString + parm ;
-                }
-                check(requestString);
-
-                requestString = "http://localhost/Edt/rest/index.php/verrificationDispoGroupe2" ;
-                if (prefix == "&") {
-                    requestString = requestString + parm ;
-                }
-                check(requestString);
-
-                requestString = "http://localhost/Edt/rest/index.php/verrificationEnseignementProf2" ;
-                if (prefix == "&") {
-                    requestString = requestString + parm ;
-                }
-                check(requestString);
-
-                requestString = "http://localhost/Edt/rest/index.php/verrificationEnseignementGroupe2" ;
-                if (prefix == "&") {
-                    requestString = requestString + parm ;
-                }
-                check(requestString);
-
-    /*requestString = "http://localhost/Edt/rest/index.php/creation" ;
-    if (prefix == "&") {
-        requestString = requestString + parm ;
-    }
-        req.open('GET', requestString, true);
-        req.send(null);*/
-    }
-
-    function checkHeure(requestString){
-        var req = new XMLHttpRequest();
-        var erreur="";
-        req.open('GET',requestString,true);
-        req.send(null);
-        req.onreadystatechange = function() {
-            if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
-                data = JSON.parse(req.response);
-                erreur=data;
-                if (data!="")
-                {
-                    document.getElementById("erreur").append(erreur);
-
-                }  
-            }      
-        };
-    }
-
-    function check(requestString){
-        var req = new XMLHttpRequest();
-        var erreur="";
-        req.open('GET',requestString,true);
-        req.send(null);
-        req.onreadystatechange = function() {
-            if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
-                data = JSON.parse(req.response);
-                erreur=data;
-                if (data!="")
-                {
-                    document.getElementById("erreur").append(erreur);
-                    var node = document.createElement("BR"); 
-                    document.getElementById("erreur").appendChild(node);
-                }  
-            }      
-        };
-    }
-
-    function supprimer(){
-        var req = new XMLHttpRequest();
-        var parm = "";
-        var prefix = "?" ;
-        var requestString ;
-        if ($('#chk_module')[0].checked) {
-            var module = $("#lb_module option:selected")[0].value ;
-            parm = parm + prefix + "module=" + module ;
-            prefix = "&" ;
-        }
-        if ($('#chk_groupe')[0].checked) {
-            var groupe = $("#lb_groupe option:selected")[0].value ;
-            parm = parm + prefix + "groupe=" + groupe ;
-            prefix = "&" ;
-        }
-        if ($('#chk_prof')[0].checked) {
-            var prof = $("#lb_prof option:selected")[0].value ;
-            parm = parm + prefix + "prof=" + prof ;
-            prefix = "&" ;
-        }
-        if ($('#chk_salle')[0].checked) {
-            var salle = $("#lb_salle option:selected")[0].value ;
-            parm = parm + prefix + "salle=" + salle ;
-            prefix = "&" ;
-        }
-
-        var heure = document.getElementById("heure").value;
-        parm = parm + prefix + "heure=" + heure ;
-        prefix = "&" ;
-
-        var cours = $("#lb_cours option:selected")[0].value ;
-        parm = parm + prefix + "cours=" + cours ;
-        prefix = "&" ;
-
-        var date = document.getElementById("date").value ;
-        parm = parm + prefix + "date=" + date ;
-        prefix = "&" ;
-
-        requestString = "http://localhost/Edt/rest/index.php/suppression" ;
-        if (prefix == "&") {
-            requestString = requestString + parm ;
-        }
-        req.open('GET', requestString, true);
-        req.send(null);
-    }
-
-    function modif(){
-        var req = new XMLHttpRequest();
-        var parm = "";
-        var prefix = "?" ;
-        var requestString ;
-        var module = document.getElementById("lb_module").value;
-        parm = parm + prefix + "module=" + module ;
-        prefix = "&" ;
-
-        var groupe = document.getElementById("lb_groupe").value;
-        parm = parm + prefix + "groupe=" + groupe ;
-        prefix = "&" ;
-
-        var prof = document.getElementById("lb_prof").value;
-        parm = parm + prefix + "prof=" + prof ;
-        prefix = "&" ;
-
-        var salle = document.getElementById("lb_salle").value;
-        parm = parm + prefix + "salle=" + salle ;
-        prefix = "&" ;
-
-        var heure = document.getElementById("heure").value;
-        parm = parm + prefix + "heure=" + heure ;
-        prefix = "&" ;
-
-        var cours = document.getElementById("lb_cours").value;
-        parm = parm + prefix + "cours=" + cours ;
-        prefix = "&" ;
-
-        var date = document.getElementById("date").value ;
-        parm = parm + prefix + "date=" + date ;
-        prefix = "&" ;
-
-        var date1 = document.getElementById("date1").value ;
-        parm = parm + prefix + "date1=" + date1 ;
-        prefix = "&" ;
-
-        var heure1 = document.getElementById("heure1").value ;
-        parm = parm + prefix + "heure1=" + heure1 ;
-        prefix = "&" ;
-
-        var cours1 = document.getElementById("cours1").value ;
-        parm = parm + prefix + "cours1=" + cours1 ;
-        prefix = "&" ;
-
-        var prof1 = document.getElementById("prof1").value ;
-        parm = parm + prefix + "prof1=" + prof1 ;
-        prefix = "&" ;
-
-        var module1 = document.getElementById("module1").value ;
-        parm = parm + prefix + "module1=" + module1 ;
-        prefix = "&" ;
-
-        var groupe1 = document.getElementById("groupe1").value ;
-        parm = parm + prefix + "groupe1=" + groupe1 ;
-        prefix = "&" ;
-
-        var salle1 = document.getElementById("salle1").value ;
-        parm = parm + prefix + "salle1=" + salle1 ;
-        prefix = "&" ;
-
-        requestString = "http://localhost/Edt/rest/index.php/modif" ;
-        if (prefix == "&") {
-            requestString = requestString + parm ;
-        }
-
-        req.open('GET', requestString, true);
-        req.send(null);
-
-        rep = JSON.parse(req.response);
-        $.each(liste_salle, function() {
-            console.log(this.cle1);
-        });
-
-
-
-
-    }
-
+            }
 
 
     function activate(chkbox) {
@@ -652,23 +729,32 @@ function loadingClose() {
             COURS <select id='lb_cours' ></select>
         </div>
         <div>
-            <input type='button' value='Charger' id='btnCharger' onclick='create()'/>
+            <input type='button' value='creation' id='btnCharger' onclick='create()'/>
         </div>
+        
+    </fieldset>
+    <div id="truc2" >
+
+    <div><p id="erreur"></p></div>
+      <div><p id="question"></p></div>
+            <input type='button' value='valider' id='valider' onclick='valider()' />
+            <input type='button' value='refuser' id='refuser' onclick='dehidden()' />
+
+        </div>
+    <fieldset>
         <div>
+            id : <input type="number"  name="id2" id="id2"/>
+
             <input type='button' value='sup' id='btnCharger' onclick='supprimer()'/>
         </div>
     </fieldset>
-
-    
-</form>
-
-<div><p id="erreur"></p></div>
-<fieldset>
-
- 
+    </form>
+        
+        <fieldset> 
     modifier ? <input type="checkbox" id="chk_modif" name="modif" onchange="button_modif()"/><br>
 
     <div id="truc" >
+        id : <input type="number"  name="id" id="id"/><br>
         MODULES  
         <select id='module1' onchange='activate2("cours1")'></select>
 
