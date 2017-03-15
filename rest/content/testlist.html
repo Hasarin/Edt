@@ -238,7 +238,7 @@ function charger_liste_modules() {
                 $('#ihm_button').css('display','none');
             }
     function create(){
-    document.getElementById("erreur").innerHTML = "";
+    document.getElementById("erreur").textContent = "";
 
     var req = new XMLHttpRequest();
     var parm = "";
@@ -326,7 +326,7 @@ function charger_liste_modules() {
         */
 }
 
-function valider(){
+function confirmer(){
 
     var req = new XMLHttpRequest();
     var parm = "";
@@ -371,11 +371,11 @@ function valider(){
     if (prefix == "&") {
         requestString = requestString + parm ;
     }
-        req.open('GET', requestString, true);
+        req.open('POST', requestString, true);
         req.send(null);
 
         document.getElementById("question").innerHTML = "Insertion effectué";
-        document.getElementById("truc2").innerHTML = "";
+    document.getElementById("erreur").textContent = "";
 
         document.getElementById('truc2').style.visibility='hidden';
 
@@ -553,7 +553,7 @@ function check(requestString){
                 if (prefix == "&") {
                     requestString = requestString + parm ;
                 }
-                req.open('GET',requestString,true);
+                req.open('PUT',requestString,true);
                 req.send(null);
 
             }
@@ -733,11 +733,12 @@ function loadingClose() {
         </div>
         
     </fieldset>
+          <div><p id="question"></p></div>
+
     <div id="truc2" >
 
     <div><p id="erreur"></p></div>
-      <div><p id="question"></p></div>
-            <input type='button' value='valider' id='valider' onclick='valider()' />
+            <input type='button' value='valider' id='valider' onclick='confirmer()' />
             <input type='button' value='refuser' id='refuser' onclick='dehidden()' />
 
         </div>

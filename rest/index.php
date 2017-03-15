@@ -635,7 +635,7 @@ $app->get('/verrificationEnseignementGroupe2', function() {
     //{   echo $num;  }
 }) ;*/
 
-$app->get('/suppression',function() {
+$app->put('/suppression',function() {
         $app = Slim\Slim::getInstance() ; 
             $module = $app->request->get('module');
             $sql = "select codeMatiere FROM matieres where nom='$module'";
@@ -666,7 +666,7 @@ $app->get('/suppression',function() {
 
     });
 
-$app->get('/creation',function() {
+$app->post('/creation',function() {
     $app = Slim\Slim::getInstance() ; 
  
             // lecture des params de post
@@ -726,7 +726,7 @@ $app->get('/creation',function() {
  
     });
 
-$app->get('/modif',function() {
+$app->put('/modif',function() {
     $app = Slim\Slim::getInstance() ; 
  
             // lecture des params de post
