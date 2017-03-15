@@ -464,7 +464,7 @@ $app->get('/verrificationDispoGroupe2', function() {
     $response->setStatus(200) ;
     $response->headers->set('Content-Type', 'application/json');
 
-    $seance = $app->request->get('cours');
+    $cours = $app->request->get('cours');
     $date = $app->request->get('date');
     $heure = $app->request->get('heure');
     $groupe = $app->request->get('groupe');
@@ -488,7 +488,7 @@ $app->get('/verrificationDispoGroupe2', function() {
 
          if($numero>=1)
     {
-    echo json_encode("Professeur deja en cours", JSON_PRETTY_PRINT) ;
+    echo json_encode("Groupe deja en cours", JSON_PRETTY_PRINT) ;
     }      
 }) ;
 
