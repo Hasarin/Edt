@@ -729,7 +729,6 @@ $app->get('/creation',function() {
 $app->get('/modif',function() {
     $app = Slim\Slim::getInstance() ; 
  
-    
             // lecture des params de post
             $module = $app->request->get('module');
             $module1 = $app->request->get('module1');
