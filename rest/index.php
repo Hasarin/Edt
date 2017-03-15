@@ -951,7 +951,7 @@ EOT;
 
         $temp["start"] = $start_date->format(DateTime::ATOM) ;
         $temp["end"] = $end_date->format(DateTime::ATOM) ;
-        $temp["title"] = $row["Enseignement"]."\t".$row["Groupe"]."\t".$row["Prof"]."\t".$row["Salle"]  ;
+        $temp["title"] = $row["Enseignement"]."\t".$row["Groupe"]."\t".$row["Prof"]."\t".$row["Salle"]."\t".$row["codeSeance"]  ;
         $r = ($row["couleurFond"]) & 0xFF ;
         $g = ($row["couleurFond"] >> 8) & 0xFF ;
         $b = ($row["couleurFond"] >> 16) & 0xFF ;

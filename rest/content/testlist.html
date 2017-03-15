@@ -376,7 +376,9 @@ function valider(){
         req.send(null);
 
         document.getElementById("question").innerHTML = "Insertion effectué";
-          document.getElementById('truc2').style.visibility='hidden';
+        document.getElementById("truc2").innerHTML = "";
+
+        document.getElementById('truc2').style.visibility='hidden';
 
         
 }
@@ -483,61 +485,65 @@ function check(requestString){
                 var parm = "";
                 var prefix = "?" ;
                 var requestString ;
-                var module = document.getElementById("lb_module").value;
-                parm = parm + prefix + "module=" + module ;
+                var module = document.getElementById("module1").value;
+                parm = parm + prefix + "module1=" + module ;
                 prefix = "&" ;
 
-                var groupe = document.getElementById("lb_groupe").value;
-                parm = parm + prefix + "groupe=" + groupe ;
+                var groupe = document.getElementById("groupe1").value;
+                parm = parm + prefix + "groupe1=" + groupe ;
                 prefix = "&" ;
 
-                var prof = document.getElementById("lb_prof").value;
-                parm = parm + prefix + "prof=" + prof ;
+                var prof = document.getElementById("prof1").value;
+                parm = parm + prefix + "prof1=" + prof ;
                 prefix = "&" ;
 
-                var salle = document.getElementById("lb_salle").value;
-                parm = parm + prefix + "salle=" + salle ;
+                var salle = document.getElementById("salle1").value;
+                parm = parm + prefix + "salle1=" + salle ;
                 prefix = "&" ;
 
-                var heure = document.getElementById("heure").value;
-                parm = parm + prefix + "heure=" + heure ;
+                var heure = document.getElementById("heure1").value;
+                parm = parm + prefix + "heure1=" + heure ;
                 prefix = "&" ;
 
-                var cours = document.getElementById("lb_cours").value;
-                parm = parm + prefix + "cours=" + cours ;
+                var cours = document.getElementById("cours1").value;
+                parm = parm + prefix + "cours1=" + cours ;
                 prefix = "&" ;
 
-                var date = document.getElementById("date").value ;
-                parm = parm + prefix + "date=" + date ;
+                var date = document.getElementById("date1").value ;
+                parm = parm + prefix + "date1=" + date ;
                 prefix = "&" ;
 
-                var date1 = document.getElementById("date1").value ;
-                parm = parm + prefix + "date1=" + date1 ;
+                var id = document.getElementById("id").value ;
+                parm = parm + prefix + "id=" + id ;
                 prefix = "&" ;
 
-                var heure1 = document.getElementById("heure1").value ;
-                parm = parm + prefix + "heure1=" + heure1 ;
+               /* var date1 = document.getElementById("date").value ;
+                parm = parm + prefix + "date=" + date1 ;
                 prefix = "&" ;
 
-                var cours1 = document.getElementById("cours1").value ;
-                parm = parm + prefix + "cours1=" + cours1 ;
+                var heure1 = document.getElementById("heure").value ;
+                parm = parm + prefix + "heure=" + heure1 ;
                 prefix = "&" ;
 
-                var prof1 = document.getElementById("prof1").value ;
-                parm = parm + prefix + "prof1=" + prof1 ;
+                var cours1 = document.getElementById("lb_cours").value ;
+                parm = parm + prefix + "cours=" + cours1 ;
                 prefix = "&" ;
 
-                var module1 = document.getElementById("module1").value ;
-                parm = parm + prefix + "module1=" + module1 ;
+                var prof1 = document.getElementById("lb_prof").value ;
+                parm = parm + prefix + "prof=" + prof1 ;
                 prefix = "&" ;
 
-                var groupe1 = document.getElementById("groupe1").value ;
-                parm = parm + prefix + "groupe1=" + groupe1 ;
+                var module1 = document.getElementById("lb_module").value ;
+                parm = parm + prefix + "module=" + module1 ;
                 prefix = "&" ;
 
-                var salle1 = document.getElementById("salle1").value ;
-                parm = parm + prefix + "salle1=" + salle1 ;
+                var groupe1 = document.getElementById("lb_groupe").value ;
+                parm = parm + prefix + "groupe=" + groupe1 ;
                 prefix = "&" ;
+
+                var salle1 = document.getElementById("lb_salle").value ;
+                parm = parm + prefix + "salle=" + salle1 ;
+                prefix = "&" ;*/
 
                 requestString = "http://localhost/Edt/rest/index.php/modif" ;
                 if (prefix == "&") {
@@ -752,6 +758,7 @@ body {
     modifier ? <input type="checkbox" id="chk_modif" name="modif" onchange="button_modif()"/><br>
 
     <div id="truc" >
+        id : <input type="number"  name="id" id="id"/><br>
         MODULES  
         <select id='module1' onchange='activate2("cours1")'></select>
 
