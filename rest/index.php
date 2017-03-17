@@ -629,7 +629,7 @@ $app->put('/suppression',function() {
 
     });
 
-$app->get('/creation',function() {
+$app->post('/creation',function() {
     $app = Slim\Slim::getInstance() ; 
  
             // lecture des params de post
@@ -685,7 +685,7 @@ $app->get('/creation',function() {
  
     });
 
-$app->get('/modif',function() {
+$app->put('/modif',function() {
     $app = Slim\Slim::getInstance() ; 
  
             // lecture des params de post
