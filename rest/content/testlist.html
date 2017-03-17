@@ -61,8 +61,6 @@
         charger() ;
         document.getElementById('truc').style.visibility='hidden';
                 document.getElementById('truc2').style.visibility='hidden';
-
-
     }) ;
 
     var liste_modules ;
@@ -95,7 +93,6 @@
             }
         } ;
         req.send(null);
-    //btn = $('#ihm_Charger').css('display','block');
 }
 
 
@@ -184,19 +181,6 @@ function charger_liste_modules() {
                 req.send(null);
             }
 
-            function tt(){
-                var req = new XMLHttpRequest();
-                req.open('GET','http://localhost/Edt/rest/index.php/verrificationDispoSalle2?cours=16106345&date=2017-02-09&heure=1600&salle=11631313',true);
-                req.onreadystatechange = function() {
-                    if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
-                        console.log("test"+"/n");
-                        data = JSON.parse(req.response);
-                        document.getElementById("erreur").append(data);
-                    }
-                };
-                req.send(null);
-            }
-
             function charger() {
                 var req = new XMLHttpRequest();
                 var parm = "";
@@ -222,7 +206,6 @@ function charger_liste_modules() {
                     parm = parm + prefix + "salle=" + salle ;
                     prefix = "&" ;
                 }
-
                 requestString = "http://localhost/Edt/rest/index.php/seances/search" ;
                 if (prefix == "&") {
                     requestString = requestString + parm ;
@@ -237,6 +220,7 @@ function charger_liste_modules() {
                 req.send(null);
                 $('#ihm_button').css('display','none');
             }
+
     function create(){
     document.getElementById("erreur").innerHTML = "";
 
@@ -281,7 +265,7 @@ function charger_liste_modules() {
     if (prefix == "&") {
         requestString = requestString + parm ;
     }
-    checkHeure(requestString);
+    check(requestString);
 
         requestString = "http://localhost/Edt/rest/index.php/verrificationDispoSalle2" ;
     if (prefix == "&") {
@@ -314,16 +298,6 @@ function charger_liste_modules() {
     check(requestString);
                 document.getElementById("question").append("voulez-vous ajouter ce cours ?"+"\r");
                 document.getElementById('truc2').style.visibility='visible';
-
-
-
-   /* requestString = "http://localhost/Edt/rest/index.php/creation" ;
-    if (prefix == "&") {
-        requestString = requestString + parm ;
-    }
-        req.open('GET', requestString, true);
-        req.send(null);
-        */
 }
 
 function valider(){
@@ -387,27 +361,6 @@ function dehidden(){
 
 }
 
-function checkHeure(requestString){
-        var req = new XMLHttpRequest();
-        var erreur="";
-        req.open('GET',requestString,true);
-        req.send(null);
-        req.onreadystatechange = function() {
-        if (req.readyState == 4 && (req.status == 200 || req.status == 0)) {
-            data = JSON.parse(req.response);
-            erreur=data;
-            if (data!="")
-            {
-                document.getElementById("erreur").append(erreur);
-                var node = document.createElement("BR");
-                document.getElementById("erreur").appendChild(node);
-
-
-            }  
-        }      
-    };
-}
-
 function check(requestString){
         var req = new XMLHttpRequest();
         var erreur="";
@@ -436,40 +389,7 @@ function check(requestString){
                 var parm = "";
                 var prefix = "?" ;
                 var requestString ;
-                /*if ($('#chk_module')[0].checked) {
-                    var module = $("#lb_module option:selected")[0].value ;
-                    parm = parm + prefix + "module=" + module ;
-                    prefix = "&" ;
-                }
-                if ($('#chk_groupe')[0].checked) {
-                    var groupe = $("#lb_groupe option:selected")[0].value ;
-                    parm = parm + prefix + "groupe=" + groupe ;
-                    prefix = "&" ;
-                }
-                if ($('#chk_prof')[0].checked) {
-                    var prof = $("#lb_prof option:selected")[0].value ;
-                    parm = parm + prefix + "prof=" + prof ;
-                    prefix = "&" ;
-                }
-                if ($('#chk_salle')[0].checked) {
-                    var salle = $("#lb_salle option:selected")[0].value ;
-                    parm = parm + prefix + "salle=" + salle ;
-                    prefix = "&" ;
-                }
-                
-                var heure = document.getElementById("heure").value;
-                parm = parm + prefix + "heure=" + heure ;
-                prefix = "&" ;
-                
-                var cours = $("#lb_cours option:selected")[0].value ;
-                parm = parm + prefix + "cours=" + cours ;
-                prefix = "&" ;
-                
-                var date = document.getElementById("date").value ;
-                parm = parm + prefix + "date=" + date ;
-                prefix = "&" ;*/
-
-                 var id = document.getElementById("id2").value;
+                var id = document.getElementById("id2").value;
                 parm = parm + prefix + "id=" + id ;
                 prefix = "&" ;
 
@@ -477,7 +397,7 @@ function check(requestString){
                 if (prefix == "&") {
                     requestString = requestString + parm ;
                 }
-                req.open('GET',requestString,true);
+                req.open('PUT',requestString,true);
                 req.send(null);
 
                 }
@@ -521,34 +441,6 @@ function check(requestString){
                 parm = parm + prefix + "id=" + id ;
                 prefix = "&" ;
 
-               /* var date1 = document.getElementById("date").value ;
-                parm = parm + prefix + "date=" + date1 ;
-                prefix = "&" ;
-
-                var heure1 = document.getElementById("heure").value ;
-                parm = parm + prefix + "heure=" + heure1 ;
-                prefix = "&" ;
-
-                var cours1 = document.getElementById("lb_cours").value ;
-                parm = parm + prefix + "cours=" + cours1 ;
-                prefix = "&" ;
-
-                var prof1 = document.getElementById("lb_prof").value ;
-                parm = parm + prefix + "prof=" + prof1 ;
-                prefix = "&" ;
-
-                var module1 = document.getElementById("lb_module").value ;
-                parm = parm + prefix + "module=" + module1 ;
-                prefix = "&" ;
-
-                var groupe1 = document.getElementById("lb_groupe").value ;
-                parm = parm + prefix + "groupe=" + groupe1 ;
-                prefix = "&" ;
-
-                var salle1 = document.getElementById("lb_salle").value ;
-                parm = parm + prefix + "salle=" + salle1 ;
-                prefix = "&" ;*/
-
                 requestString = "http://localhost/Edt/rest/index.php/modif" ;
                 if (prefix == "&") {
                     requestString = requestString + parm ;
@@ -567,10 +459,7 @@ function check(requestString){
 
             var module = $("#lb_module option:selected")[0].value ;
             activate2('lb_cours') ;
-
         }
-
-
     }
 
     function activate2(check) {
@@ -589,6 +478,7 @@ function check(requestString){
     var chk = $(chkbox)[0] ;
     chk.checked = false;
 }
+
 function button_enable() {
     $('#calendar').fullCalendar('removeEvents') ;
     // $('#ihm_button').css('display','block');

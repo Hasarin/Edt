@@ -62,8 +62,6 @@ function soustractionHeure($heure,$duree)
     return $heure;
 }
 
-
-
 $app->get('/cours', function() {
     $app = Slim\Slim::getInstance() ;
     $module = $app->request->get('module');
@@ -197,7 +195,6 @@ $app->get('/verrificationTempsTotal', function() {
             $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
             $test2 = json_decode($test, true);
             $SumDuree = $test2[0];
-            echo $dureeTotale;
 
     /*DB::begin_transaction();
     $sql = "select codeSalle,nom ".
@@ -602,40 +599,7 @@ $app->get('/verrificationEnseignementGroupe2', function() {
     }
 }) ;
 
-/*$app->get('/verrificationEnseignementSalle', function() {
-    $app = Slim\Slim::getInstance() ;
-    $response = $app->response() ;
-    $response->setStatus(200) ;
-    $response->headers->set('Content-Type', 'application/json');
-
-    $seance = $app->request->get('seance');
-
-    $sql = "SELECT codeEnseignement FROM seances WHERE codeSeance=$seance";
-            $stmt = DB::getModule($sql) ;
-            $tuple = DB::getNext($stmt) ;
-            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
-            $test2 = json_decode($test, true);
-            $codeEnseignement = $test2[0];
-
-    $sql = "SELECT codeRessource FROM seances_salles where codeSeance=$seance";
-            $stmt = DB::getModule($sql) ;
-            $tuple = DB::getNext($stmt) ;
-            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
-            $test2 = json_decode($test, true);
-            $salle = $test2[0];
-
-    $sql = "SELECT count(*) as num FROM enseignements_salles WHERE codeEnseignement=$codeEnseignement AND codeRessource=$salle";
-            $stmt = DB::getModule($sql) ;
-            $tuple = DB::getNext($stmt) ;
-            $test = json_encode($tuple, JSON_PRETTY_PRINT) ;
-            $test2 = json_decode($test, true);
-            $num = $test2[0];
-           
-    //if($num=0)
-    //{   echo $num;  }
-}) ;*/
-
-$app->get('/suppression',function() {
+$app->put('/suppression',function() {
         $app = Slim\Slim::getInstance() ; 
             $module = $app->request->get('module');
             $sql = "select codeMatiere FROM matieres where nom='$module'";
@@ -658,10 +622,9 @@ $app->get('/suppression',function() {
 
             $stmt = DB::createCour($sqlcommand) ;
 
-
             $response = $app->response() ;
-    $response->setStatus(200) ;
-    $response->headers->set('Content-Type', 'application/json');
+            $response->setStatus(200) ;
+            $response->headers->set('Content-Type', 'application/json');
 
 
     });
@@ -693,9 +656,6 @@ $app->get('/creation',function() {
             $par_date = $app->request->get('date');
             $par_heure = $app->request->get('heure');
 
-       // $sqlcommand = "INSERT INTO seances(dateSeance,heureSeance,dureeSeance,codeEnseignement,commentaire,diffusable)
-        //    values ('2017-12-03',1000,200,3201,'',1)";
-
         $sqlcommand = "INSERT INTO seances(dateSeance,heureSeance,dureeSeance,codeEnseignement,dateModif,codeProprietaire,commentaire,dateCreation)
         values ('$par_date',$par_heure,$duree,$par_cours,now(),3001,'',now())";
         $stmt = DB::createCour($sqlcommand) ;
@@ -722,7 +682,6 @@ $app->get('/creation',function() {
         values ($max,$par_groupe,now(),0,3001,now())";
 
     $stmt = DB::createRessource($sqlcommand4) ;
-
  
     });
 
